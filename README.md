@@ -43,7 +43,7 @@ From your command line:
 #### # Clone this repository
 
 ```bash
-git clone url
+git clone https://github.com/YounesAlturkey/gittuwaiq.git
 ```
 
 #### # Go into the frontend directory
@@ -80,7 +80,11 @@ npm start
 
 ### <a href="">Frontend</a>
 
-- React@17.0.2
+- React
+
+### Core Dependencies
+
+- [LibGit2Sharp](https://github.com/libgit2/libgit2sharp)
 
 </div>
 
@@ -92,7 +96,7 @@ npm start
 
 ## License
 
-[MIT]()
+[MIT](https://github.com/YounesAlturkey/gittuwaiq/blob/main/LICENSE.md)
 
 </div>
 
