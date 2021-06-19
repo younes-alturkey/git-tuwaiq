@@ -116,7 +116,7 @@ npm start
 
 > Mansour Aldundur ➝ [@aldundur-Mansour](https://github.com/aldundur-Mansour)
 
-> Abdulrahman Bin Maneea ➝ [@aldundur-Mansour](https://github.com/AWManeea)
+> Abdulrahman Bin Maneea ➝ [@AWManeea](https://github.com/AWManeea)
 
 > Younes Alturkey ➝ [@younes-alturkey](https://github.com/younes-alturkey)
 
