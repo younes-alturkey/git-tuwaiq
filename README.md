@@ -96,7 +96,7 @@ npm start
 
 ## License
 
-[MIT](https://github.com/YounesAlturkey/gittuwaiq/blob/main/LICENSE.md)
+[MIT](https://github.com/YounesAlturkey/gittuwaiq/blob/main/files/LICENSE.md)
 
 </div>
 
