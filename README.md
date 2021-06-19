@@ -1,8 +1,8 @@
 <h1 align="center">
-<a href=""><img src="./frontend/src/assets/img/logo.png" alt="GitTuwaiq Logo" width="80"/></a>
+<a href="https://gittuwaiq.netlify.app/"><img src="./frontend/src/assets/img/logo.png" alt="GitTuwaiq Logo" width="80"/></a>
 </br>
 
-<a href="">GitTuwaiq: Web-based GUI for Git</a>
+<a href="https://gittuwaiq.netlify.app/">GitTuwaiq: Web-based GUI for Git</a>
 
 </h1>
 <h4 align="center">Web-based graphical interface for distributed version control system Git.</h4>
@@ -12,11 +12,11 @@
   <a href="#how-to-use">How To Use</a> •
   <a href="#tech-stack">Tech Stack</a> •
   <a href="#license">License</a> •
-  <a href="">Live</a>
+  <a href="https://gittuwaiq.netlify.app/">Live</a>
 </p>
 
 <p align="center">
-  <a href=""><img src="https://i.stack.imgur.com/y9DpT.jpg" alt="demo"/></a>
+  <a href="https://gittuwaiq.netlify.app/"><img src="https://i.stack.imgur.com/y9DpT.jpg" alt="demo"/></a>
 </p>
 
 <br/>
@@ -78,7 +78,7 @@ npm start
 - Entity Framework - Code First Approach
 - Microsoft SQL Database
 
-### <a href="">Frontend</a>
+### <a href="https://gittuwaiq.netlify.app/">Frontend</a>
 
 - React
 
