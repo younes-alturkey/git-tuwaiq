@@ -1,5 +1,4 @@
-﻿using backend.Models.DTOs;
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,13 +10,14 @@ namespace backend.Controllers
     [ApiController]
     public class ReposController : ControllerBase
     {
-        private readonly string _directory = @"C:\Users\Younes\Desktop\repos";
+        //Hard coded for MacOS
+        private readonly string _directory = "/Users/younes/Desktop/repos/";
 
         [HttpPost("[action]")]
         public IActionResult Clone(string Url)
         {
             string repoName = Url.Split("/")[^1];
-            string repoPath = _directory + @"\" + repoName;
+            string repoPath = _directory + repoName;
             try
             {
                 Repository.Clone(Url, repoPath);
@@ -34,7 +34,7 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = _directory + @"\" + RepoName + ".git";
+                string repoPath = _directory + RepoName + ".git";
                 var repo = new Repository(repoPath);
                 return Ok(new { repo });
 
@@ -55,7 +55,7 @@ namespace backend.Controllers
                 string directoryName;
                 foreach (var directory in repos)
                 {
-                    directoryName = directory.Split(@"\")[^1];
+                    directoryName = directory.Split("/")[^1];
                     if (directoryName == fullRepoName)
                     {
                         return Ok(new { Status = "Exists", Repo = RepoName });
@@ -76,7 +76,7 @@ namespace backend.Controllers
         {
             try
             {
-                string newRepo = _directory + @"\" + RepoName + ".git";
+                string newRepo = _directory + RepoName + ".git";
                 Repository.Init(newRepo);
                 return Ok(new { Status = "Initialized", Repo = RepoName + ".git" });
 
@@ -91,7 +91,7 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = _directory + @"\" + RepoName + ".git";
+                string repoPath = _directory + RepoName + ".git";
                 var repos = Directory.GetDirectories(_directory);
                 foreach (var directory in repos)
                 {
