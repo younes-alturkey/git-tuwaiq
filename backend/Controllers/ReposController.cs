@@ -168,7 +168,7 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = _directory + RepoName + ".git";
+                string repoPath = _directory + RepoName;
                 var repo = new Repository(repoPath);
                 return Ok(new { repo });
             }

@@ -13,10 +13,14 @@ namespace backend.Models
         public uint Forks { set; get; }
         public uint Watch { set; get; }
         public bool isPublic { set; get; }
+
+        public string Description { get; set; }
         // one to many User => Repos 
         public UserModel User_Id { get; set; }
         
         // on to many Repo => issues 
         public List<RepoModel> Issues { set; get;  }
+
+       
     }
 }
