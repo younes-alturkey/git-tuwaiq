@@ -150,7 +150,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("commits/{repo}")]
+        [HttpGet("commits")]
         public ActionResult GetCommits(string username, string repo)
         {
             try
@@ -200,7 +200,7 @@ namespace backend.Controllers
 
 
 
-[HttpGet("branches/{repo}")]
+[HttpGet("branches")]
         public ActionResult GetBranches(string username, string repo)
         {
             try
