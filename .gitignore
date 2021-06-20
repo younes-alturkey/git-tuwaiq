@@ -14,6 +14,14 @@ build/
 /obj
 bin/
 obj/
+/.idea
+.idea/
+%TEMP%
+%TEMP%/
+/%TEMP%
+.config
+/.config
+.config/
 
 # misc
 .DS_Store

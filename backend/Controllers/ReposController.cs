@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
 
 namespace backend.Controllers
 {
@@ -13,8 +15,7 @@ namespace backend.Controllers
     public class ReposController : ControllerBase
     {
         private readonly string _directory = $"{Environment.GetEnvironmentVariable("TEMP")}/repos/";
-        private readonly string _domain = $"gittuwaiq.com/";
-
+        private readonly string _domain = "https://backend20210620132023.azurewebsites.net/";
         public record file(string name, string type, string url);
         public ReposController()
         {
@@ -26,9 +27,7 @@ namespace backend.Controllers
                     break;
             }
             Debug.WriteLine($"{_directory}");
-
         }
-
         [HttpGet("Files")]
         public ActionResult GetFiles(string repo, string path = "/")
         {
@@ -40,6 +39,7 @@ namespace backend.Controllers
                 {
                     var splittedFileName = f.Split('/');
                     var fileName = splittedFileName[splittedFileName.Length - 1];
+
                     var type = "";
                     if (fileName.Contains('.'))
                     {
@@ -49,8 +49,6 @@ namespace backend.Controllers
                     var url = $"{_domain}{repo}/{fileName}";
                     files.Add(new file(fileName, type == "" ? "regular file" : type, url));
                 }
-
-
                 foreach (var f in Directory.GetDirectories(repoPath))
                 {
                     var splittedDirName = f.Split('/');
@@ -66,6 +64,44 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet("Download")]
+        public ActionResult Download(string repo)
+        {
+            var repoDir = new DirectoryInfo($"{_directory}{repo}/");
+            var zipName = new FileInfo($"{_directory}{repo}.zip");
+            if (!repoDir.Exists) return NotFound(repoDir);
+            if (zipName.Exists) System.IO.File.Delete(zipName.FullName);
+            ZipFile.CreateFromDirectory(repoDir.FullName, zipName.FullName);
+            return new FileContentResult(System.IO.File.ReadAllBytes(zipName.FullName), "application/zip");
+        }
+
+
+        [HttpGet("branches/{RepoName}")]
+        public ActionResult GetBranches(string RepoName)
+        {
+            try
+            {
+                string repoPath = _directory + RepoName;
+                var repo = new Repository(repoPath);
+                var branches = repo.Branches.ToArray();
+                List<string> branchesNames = new List<string>();
+                foreach (var branch in branches)
+                {
+                    branchesNames.Add(branch.FriendlyName);
+                }
+
+                return Ok(new
+                {
+                    branches = branchesNames
+                });
+            }
+            catch (Exception error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
+            }
+        }
+
+
         [HttpPost("[action]")]
         public IActionResult Clone(string Url)
         {
@@ -75,14 +111,12 @@ namespace backend.Controllers
             {
                 Repository.Clone(Url, repoPath);
                 return Ok(new { Status = "Cloned", Repo = repoName });
-
             }
             catch (Exception error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
-
         [HttpGet("[action]/{RepoName}")]
         public IActionResult Repo(string RepoName)
         {
@@ -91,14 +125,12 @@ namespace backend.Controllers
                 string repoPath = _directory + RepoName + ".git";
                 var repo = new Repository(repoPath);
                 return Ok(new { repo });
-
             }
             catch (Exception error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
-
         [HttpGet("[action]/{RepoName}")]
         public IActionResult Exists(string RepoName)
         {
@@ -115,17 +147,13 @@ namespace backend.Controllers
                         return Ok(new { Status = "Exists", Repo = RepoName });
                     }
                 }
-
                 return NotFound(new { Status = "Doesn't Exist", Repo = RepoName });
-
             }
             catch (Exception error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
-
         }
-
         [HttpPost("[action]/{RepoName}")]
         public IActionResult Init(string RepoName)
         {
@@ -134,14 +162,12 @@ namespace backend.Controllers
                 string newRepo = _directory + RepoName + ".git";
                 Repository.Init(newRepo);
                 return Ok(new { Status = "Initialized", Repo = RepoName + ".git" });
-
             }
             catch (Exception error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
-
         [HttpDelete("[action]/{RepoName}")]
         public IActionResult Delete(string RepoName)
         {
@@ -157,24 +183,19 @@ namespace backend.Controllers
                         return Ok(new { Status = "Deleted", Repo = RepoName });
                     }
                 }
-
-
                 return NotFound(new { Status = "Doesn't Exist", Repo = RepoName });
-
             }
             catch (Exception error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
-
         private static void DeleteDirectory(string directory)
         {
             foreach (string subdirectory in Directory.EnumerateDirectories(directory))
             {
                 DeleteDirectory(subdirectory);
             }
-
             foreach (string fileName in Directory.EnumerateFiles(directory))
             {
                 var fileInfo = new FileInfo(fileName)
@@ -183,7 +204,6 @@ namespace backend.Controllers
                 };
                 fileInfo.Delete();
             }
-
             Directory.Delete(directory);
         }
     }

@@ -25,12 +25,9 @@ namespace backend
             if (!new FileInfo(_directory).Exists)
                 Directory.CreateDirectory(_directory);
         }
-
         public IConfiguration Configuration { get; }
-
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
@@ -45,22 +42,15 @@ namespace backend
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GitTuwaiq", Version = "v1" });
             });
         }
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseDeveloperExceptionPage();
-
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GitTuwaiq API v1"));
-
             app.UseCors("CorsPolicy");
-
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
