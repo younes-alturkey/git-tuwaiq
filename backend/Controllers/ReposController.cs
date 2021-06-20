@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using backend.Models.Data;
 
 namespace backend.Controllers
 {
@@ -16,9 +17,11 @@ namespace backend.Controllers
     {
         private readonly string _directory = $"{Environment.GetEnvironmentVariable("TEMP")}/repos/";
         private readonly string _domain = "https://backend20210620132023.azurewebsites.net/";
+        private readonly AppDbContext _db;
         public record file(string name, string type, string url);
-        public ReposController()
+        public ReposController(AppDbContext db)
         {
+            _db = db;
             switch (Environment.OSVersion.Platform)
             {
                 case PlatformID.Unix:
@@ -28,6 +31,7 @@ namespace backend.Controllers
             }
             Debug.WriteLine($"{_directory}");
         }
+
         [HttpGet("Files")]
         public ActionResult GetFiles(string repo, string path = "/")
         {
@@ -75,6 +79,48 @@ namespace backend.Controllers
             return new FileContentResult(System.IO.File.ReadAllBytes(zipName.FullName), "application/zip");
         }
 
+        [HttpGet("Star")]
+        public ActionResult Star(string username, string repo)
+        {
+            if (!_db.Users.Where(u => u.UserName == username).Any()) return Redirect("login");
+            if (!_db.Repos.Where(r => r.Name == repo).Any()) return NotFound("تستهبل؟!");
+            try
+            {
+                _db.Repos.Where(r => r.Name == repo).Single().Stars++;
+                _db.SaveChanges();
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest("Repo does not exist in our DB (our DBA is drunk)");
+            }
+        }
+
+
+        // [HttpGet("Watch")]
+        // public ActionResult Watch(string username, string repository)
+        // {
+        //     var user = _db.Users.Where(u => u.UserName == username).FirstOrDefault();
+        //     if(user == null) Redirect("login");
+        //     var repo = _db.Repos.Where(r => r.Name == repository && r.User_Id == user.Id)
+        //     if (!_db.Repos.Where(r => r.Name == repo).Any()) return NotFound("تستهبل؟!");
+        //     try
+        //     {
+        //         _db.Repos.Where(r => r.Name == repo).Single().Watch++;
+        //         _db.SaveChanges();
+        //         return Ok();
+        //     }
+        //     catch
+        //     {
+        //         return BadRequest("Repo does not exist in our DB (our DBA is drunk)");
+        //     }
+        // }
+
+        [HttpGet("Fork")]
+        public ActionResult Fork()
+        {
+            return Ok();
+        }
 
         [HttpGet("branches/{RepoName}")]
         public ActionResult GetBranches(string RepoName)
