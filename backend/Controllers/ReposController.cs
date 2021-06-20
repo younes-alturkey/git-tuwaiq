@@ -164,8 +164,8 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = $"{_directory}{repo.Username}/{repo.Repo}";
-                if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
+                string repoPath = $"{_directory}{repo.Username}\\{repo.Repo}";
+                if (!new DirectoryInfo(repoPath).Exists) return NotFound($"The repo `{repoPath}` does not exist");
                 var repository = new Repository(repoPath);
                 var commits = repository.Commits.ToArray();
                 List<commit> commitsNames = new List<commit>();
@@ -214,7 +214,7 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = $"{_directory}{username}/{repo}";
+                string repoPath = $"{_directory}{username}\\{repo}";
                 if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
                 var repository = new Repository(repoPath);
                 var branches = repository.Branches.ToArray();

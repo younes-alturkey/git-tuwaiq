@@ -136,5 +136,8 @@ namespace backend.Controllers
         {
             return _context.Users.Any(e => e.Id == id);
         }
+
+        [HttpGet("debug")]
+        public string GetDir() => _directory;
     }
 }
