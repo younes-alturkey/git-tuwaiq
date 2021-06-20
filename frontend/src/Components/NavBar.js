@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Container, Navbar, NavDropdown, Nav, Image } from 'react-bootstrap';
+import { Container, Navbar, Nav, Image } from 'react-bootstrap';
 import {LinkContainer} from 'react-router-bootstrap'
 import { FiPlus } from 'react-icons/fi';
 const NavBar = () => {
