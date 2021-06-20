@@ -150,39 +150,15 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("branches/{RepoName}")]
-        public ActionResult GetBranches(string RepoName)
+        [HttpGet("commits/{repo}")]
+        public ActionResult GetCommits(string username, string repo)
         {
             try
             {
-                string repoPath = _directory + RepoName;
-                var repo = new Repository(repoPath);
-                var branches = repo.Branches.ToArray();
-                List<string> branchesNames = new List<string>();
-                foreach (var branch in branches)
-                {
-                    branchesNames.Add(branch.FriendlyName);
-                }
-
-                return Ok(new
-                {
-                    branches = branchesNames
-                });
-            }
-            catch (Exception error)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
-            }
-        }
-
-        [HttpGet("commits/{RepoName}")]
-        public ActionResult GetCommits(string RepoName)
-        {
-            try
-            {
-                string repoPath = _directory + RepoName;
-                var repo = new Repository(repoPath);
-                var commits = repo.Commits.ToArray();
+                string repoPath = $"{_directory}{username}/{repo}";
+                if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
+                var repository = new Repository(repoPath);
+                var commits = repository.Commits.ToArray();
                 List<commit> commitsNames = new List<commit>();
 
                 for (int i = 0; i < commits.Length; i++)
@@ -199,7 +175,7 @@ namespace backend.Controllers
                     {
 
                         int length = commits[i].Parents.ToArray().Length;
-                        Console.WriteLine(commits[i].Parents.ToArray()[0].Sha);
+                        // Console.WriteLine(commits[i].Parents.ToArray()[0].Sha);
                         commitsNames[i].firstParentSha = commits[i].Parents.ToArray()[0].Sha;
                         length--;
 
@@ -220,6 +196,36 @@ namespace backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
+
+
+
+
+[HttpGet("branches/{repo}")]
+        public ActionResult GetBranches(string username, string repo)
+        {
+            try
+            {
+                string repoPath = $"{_directory}{username}/{repo}";
+                if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
+                var repository = new Repository(repoPath);
+                var branches = repository.Branches.ToArray();
+                List<string> branchesNames = new List<string>();
+                foreach (var branch in branches)
+                {
+                    branchesNames.Add(branch.FriendlyName);
+                }
+
+                return Ok(new
+                {
+                    branches = branchesNames
+                });
+            }
+            catch (Exception error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
+            }
+        }
+
 
         [HttpPost("clone")]
         public IActionResult Clone(string Url, string username)
