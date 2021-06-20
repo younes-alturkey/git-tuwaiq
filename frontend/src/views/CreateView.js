@@ -9,10 +9,9 @@ export default function CreateView() {
     const [repo, setRepo] = useState(()=>"")
 
 
-    const PostRepo =()=>{
-        console.log("---"+repo+"-------");
-         axios.post("/api/repos/init/"+repo).then((res)=>{
-                 console.log(res.data);
+    const PostRepo = () => {
+        axios.post(`/api/init?username=${user && user.userName}&repo=${repo}`).then((res)=>{
+            history.push("/")
          }).catch(err=>{
              console.log("err:", err);
          })
