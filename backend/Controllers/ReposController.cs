@@ -220,7 +220,7 @@ namespace backend.Controllers
 
 
 
-        [HttpGet("branches")]
+        [HttpPost("branches")]
         public ActionResult GetBranches(RepoDTO repo)
         {
             try
