@@ -222,17 +222,27 @@ namespace backend.Controllers
             }
         }
 
-
         [HttpPost("clone")]
-        public IActionResult Clone(string Url, string user)
+        public IActionResult Clone(string Url, string username)
         {
+            var user = _db.Users.Where(user => user.UserName == username).FirstOrDefault();
+            if (user == null) return StatusCode(401, "User does not exist");
+            var userDir = new DirectoryInfo(_directory + username);
+            if (!userDir.Exists) userDir.Create();
             string repoName = Url.Split("/")[^1];
-            var userDir = new DirectoryInfo(_directory + user);
             if (!userDir.Exists) userDir.Create();
             string repoPath = userDir.FullName + repoName;
             try
             {
                 Repository.Clone(Url, repoPath);
+                _db.Repos.Add(new Models.RepoModel()
+                {
+                    CreatedAt = DateTime.Now,
+                    Description = "New Repo",
+                    Name = repoName,
+                    User_Id = user,
+                    UserId = user.Id,
+                });
                 return Ok(new { Status = "Cloned", Repo = repoName });
             }
             catch (Exception error)
@@ -241,38 +251,14 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("[action]/{RepoName}")]
-        public IActionResult Repo(string RepoName)
+        [HttpGet("repo")]
+        public IActionResult Repo(string username, string repo)
         {
             try
             {
-                string repoPath = _directory + RepoName;
-                var repo = new Repository(repoPath);
+                var repoDir = new DirectoryInfo(_directory + username + repo);
+                var repoObj = new Repository(repoDir.FullName);
                 return Ok(new { repo });
-            }
-            catch (Exception error)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
-            }
-        }
-
-        [HttpGet("[action]/{RepoName}")]
-        public IActionResult Exists(string RepoName)
-        {
-            try
-            {
-                string fullRepoName = RepoName + ".git";
-                var repos = Directory.GetDirectories(_directory);
-                string directoryName;
-                foreach (var directory in repos)
-                {
-                    directoryName = directory.Split("/")[^1];
-                    if (directoryName == fullRepoName)
-                    {
-                        return Ok(new { Status = "Exists", Repo = RepoName });
-                    }
-                }
-                return NotFound(new { Status = "Doesn't Exist", Repo = RepoName });
             }
             catch (Exception error)
             {
@@ -289,6 +275,7 @@ namespace backend.Controllers
                 if (user == null) return StatusCode(401, "User does not exist");
                 var userDir = new DirectoryInfo(_directory + username);
                 if (!userDir.Exists) userDir.Create();
+
                 string newRepo = userDir.FullName + repo;
                 Repository.Init(newRepo);
                 _db.Repos.Add(new Models.RepoModel()
@@ -307,22 +294,22 @@ namespace backend.Controllers
             }
         }
 
-        [HttpDelete("[action]/{RepoName}")]
-        public IActionResult Delete(string RepoName)
+        [HttpDelete("delete")]
+        public IActionResult Delete(string username, string repo)
         {
             try
             {
-                string repoPath = _directory + RepoName + ".git";
+                string repoPath = _directory + username + repo;
                 var repos = Directory.GetDirectories(_directory);
                 foreach (var directory in repos)
                 {
                     if (directory == repoPath)
                     {
                         DeleteDirectory(repoPath);
-                        return Ok(new { Status = "Deleted", Repo = RepoName });
+                        return Ok(new { Status = "Deleted", Repo = repo });
                     }
                 }
-                return NotFound(new { Status = "Doesn't Exist", Repo = RepoName });
+                return NotFound(new { Status = "Doesn't Exist", Repo = repo });
             }
             catch (Exception error)
             {
