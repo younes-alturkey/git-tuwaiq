@@ -110,12 +110,12 @@ namespace backend.Controllers
         public IAsyncEnumerable<RepoModel> Explore() => _db.Repos.AsAsyncEnumerable();
 
         [HttpPatch("star")]
-        public ActionResult Star(string username, string repository)
+        public ActionResult Star(RepoDTO dto)
         {
-            var user = _db.Users.Where(u => u.UserName == username).FirstOrDefault();
-            if (user == null) NotFound($"User `{username}` not found");
-            var repo = _db.Repos.Where(r => r.Name == repository && r.UserId == user.Id).FirstOrDefault();
-            if (repo == null) return NotFound($"Repository `{repository}` not found");
+            var user = _db.Users.Where(u => u.UserName == dto.Username).FirstOrDefault();
+            if (user == null) NotFound($"User `{dto.Username}` not found");
+            var repo = _db.Repos.Where(r => r.Name == dto.Repo && r.UserId == user.Id).FirstOrDefault();
+            if (repo == null) return NotFound($"Repository `{dto.Repo}` not found");
             try
             {
                 _db.Repos.Where(r => r.Name == repo.Name && r.UserId == repo.UserId).Single().Stars++;
