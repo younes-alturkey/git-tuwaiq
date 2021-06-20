@@ -8,9 +8,9 @@ namespace backend.Controllers
 {
     public class TestingController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        // public IActionResult Index()
+        // {
+        //     return View();
+        // }
     }
 }

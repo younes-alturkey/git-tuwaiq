@@ -150,12 +150,17 @@ namespace backend.Controllers
             }
         }
 
+        public class RepoDTO
+        {
+            public string Username { get; set; }
+            public string Repo { get; set; }
+        }
         [HttpGet("commits")]
-        public ActionResult GetCommits(string username, string repo)
+        public ActionResult GetCommits(RepoDTO repo)
         {
             try
             {
-                string repoPath = $"{_directory}{username}/{repo}";
+                string repoPath = $"{_directory}{repo.Username}/{repo.Repo}";
                 if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
                 var repository = new Repository(repoPath);
                 var commits = repository.Commits.ToArray();
