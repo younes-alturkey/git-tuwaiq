@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
@@ -60,6 +62,33 @@ namespace backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
+        
+        [HttpGet("branches/{RepoName}")]
+        public ActionResult GetBranches(string RepoName)
+        {
+            try
+            {
+                string repoPath = _directory + RepoName;
+                var repo = new Repository(repoPath);
+                var branches = repo.Branches.ToArray();
+                List<string> branchesNames = new List<string>();
+                foreach (var branch in branches)
+                {
+                    branchesNames.Add(branch.FriendlyName);
+                }
+
+                return Ok(new
+                {
+                    branches = branchesNames
+                });
+            }
+            catch (Exception error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
+            }
+        }
+                
+                
         [HttpPost("[action]")]
         public IActionResult Clone(string Url)
         {
