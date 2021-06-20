@@ -127,7 +127,7 @@ namespace backend.Controllers
         [HttpGet("repos")]
         public ActionResult GetRepos(string username)
         {
-            var userDir = new DirectoryInfo(_directory);
+            var userDir = new DirectoryInfo(_directory + username);
             if (!userDir.Exists) return NotFound("I never heard of such a username before. Are you drunk?");
             return Ok(Directory.GetDirectories(userDir.FullName));
         }
