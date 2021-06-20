@@ -19,16 +19,16 @@ namespace backend.Controllers
         private readonly string _domain = "https://backend20210620132023.azurewebsites.net/";
         private readonly AppDbContext _db;
         public record file(string name, string type, string url);
-        
+
         public record commit
         {
             public string sha { set; get; }
-            public string message{ set; get; }
+            public string message { set; get; }
             public string autherName { set; get; }
             public string autherEmail { set; get; }
             public string time { set; get; }
-            public string? firstParentSha { set; get; }
-            public string? secondParentSha { set; get; }
+            public string firstParentSha { set; get; }
+            public string secondParentSha { set; get; }
         }
 
         public ReposController(AppDbContext db)
