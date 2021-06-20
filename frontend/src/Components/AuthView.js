@@ -5,8 +5,8 @@ import 'rsuite/dist/styles/rsuite-default.css'
 import axios from 'axios'
 
 const loginUser = {
-    email:"younes.alturkey@tuwaiq.edu.sa",
-    password:"admin"
+    email:"younes@gittuwaiq.com",
+    password:"password"
 }
 
 const tmpNewUser = {
