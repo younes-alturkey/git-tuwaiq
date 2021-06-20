@@ -206,7 +206,7 @@ namespace backend.Controllers
 
                         if (length > 0)
                         {
-                            commitsNames[i].secondParentSha.Insert(0, commits[i].Parents.ToArray()[1].Sha);
+                            commitsNames[i].firstParentSha = commits[i].Parents.ToArray()[1].Sha;
                         }
                     }
                 }
