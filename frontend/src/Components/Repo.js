@@ -16,7 +16,17 @@ export default function Repo() {
 
     const download = () => {
         axios.post('/api/download', { username: user.userName, repo: repo })
-        .then(res => console.log(res.data))
+            .then(res => {
+                const url = window.URL.createObjectURL(
+                    new File([res.data], `${repo}.zip`)
+                  )
+                  const link = document.createElement('a')
+                  link.href = url
+                  link.setAttribute('download', `${repo}.zip`)
+                  document.body.appendChild(link)
+                  link.click()
+                  link.parentNode.removeChild(link)
+        })
     }
     return (
         <div className="mt-5">
@@ -44,7 +54,7 @@ export default function Repo() {
                 <div className="row justify-content-between mb-3 mx-auto">
                      <Branches/>
                      <div className="col-2 btn-group me-2" role="group"> 
-                        <button type="button" className="btn btn-success">Code <GoDesktopDownload style={{color:"white"}}/></button>
+                        <button onClick={() => download()} type="button" className="btn btn-success">Code <GoDesktopDownload style={{color:"white"}}/></button>
                      </div> 
                 </div>
                 <ul className="list-group">

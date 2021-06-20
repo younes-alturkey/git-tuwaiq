@@ -13,8 +13,8 @@ const Clone = () => {
   const [show, setShow] = useState(()=>false);
   const [textClone, setTextClone] = useState(()=>null);
 
-  const handleClose = () => setShow(()=>false);
-  const handleShow = () => setShow(()=>true);
+  const handleClose = () => setShow((prev)=> prev = false);
+  const handleShow = () => setShow((prev)=> prev = true);
 
   const postClone = ()=> {
      axios.post("/api/repos/clone?url="+textClone)
@@ -29,6 +29,7 @@ const close = () => {
   setShow((prev)=> prev = false)
 }
 const open = () => {
+  console.log("99999999999999999999");
   setShow((prev)=> prev = true)
 }
 
@@ -45,24 +46,34 @@ const toggleDrawer = (placement) => {
           marginTop: "13px",
           marginRight: "20px",
         }}
-        onClick={handleShow}
+        onClick={()=>open()}
       />
 
 <div className="modal-container">
-<ButtonToolbar>
+{/* <ButtonToolbar>
 <IconButton
             icon={<Icon icon="angle-up" />}
             onClick={() => toggleDrawer('bottom')}
           >
             Bottom
           </IconButton>
-        </ButtonToolbar>
+        </ButtonToolbar> */}
 
-        <Drawer full placement={"left"} show={show} onHide={this.close}>
+        <Drawer size={'xs'} full show={show} onHide={close}>
           <Drawer.Header>
-            <Drawer.Title>Drawer Title</Drawer.Title>
+            <Drawer.Title>Clone remote Repo</Drawer.Title>
           </Drawer.Header>
           <Drawer.Body>
+            {/* <FormControl
+              placeholder="https://github.com/torvalds/linux.git"
+              aria-label="clone"
+              aria-describedby="basic-addon1"
+            /> */}
+            <input onChange={(e) => setTextClone(prev => prev = e.target.value)} type="text" className="form-control"  aria-describedby="emailHelp" placeholder="https://github.com/torvalds/linux.git" id="PostCloneName"/>
+
+<InputGroup.Text onClick={()=>postClone()} id="basic-addon1"><VscCloudDownload/></InputGroup.Text>
+
+<VscChromeClose onClick={handleClose} />
             
           </Drawer.Body>
           <Drawer.Footer>

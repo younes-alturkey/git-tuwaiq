@@ -2,11 +2,19 @@ import React from "react";
 import { Container, Navbar, Nav, Image } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { FiPlus } from "react-icons/fi";
+import { useHistory } from 'react-router-dom'
 import Clone from "./Clone";
 import Logo from "../assets/img/logo.png";
-import { VscRepoClone, VscChromeClose,VscCloudDownload } from "react-icons/vsc";
+import { VscRepoClone, VscChromeClose,VscCloudDownload, VscSignOut } from "react-icons/vsc";
 
 const NavBar = () => {
+  const history = useHistory()
+
+  const signout = () => {
+    localStorage.setItem("User", null)
+    history.push("/auth")
+
+  }
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -33,14 +41,14 @@ const NavBar = () => {
           </Nav>
           <Nav>
             <Nav.Link>
-            <VscRepoClone
+            {/* <VscRepoClone
         style={{
           color: "white",
           fontSize: "25px",
           marginTop: "13px",
           marginRight: "20px",
         }}
-      />
+      /> */}
             </Nav.Link>
             <LinkContainer style={{ cursor: "pointer" }} to="/create">
               <Nav.Link>
@@ -52,8 +60,20 @@ const NavBar = () => {
                     marginRight: "20px",
                   }}
                 />
+                <Clone/>
               </Nav.Link>
             </LinkContainer>
+              <Nav.Link>
+              <VscSignOut
+                onClick={() => signout()}
+                  style={{
+                    color: "white",
+                    fontSize: "25px",
+                    marginTop: "10px",
+                    marginRight: "20px",
+                  }}
+                />
+              </Nav.Link>
             <LinkContainer style={{ cursor: "pointer" }} to="/profile">
               <Image
                 width="50"
