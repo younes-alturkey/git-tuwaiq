@@ -19,6 +19,9 @@ obj/
 %TEMP%
 %TEMP%/
 /%TEMP%
+.config
+/.config
+.config/
 
 # misc
 .DS_Store
