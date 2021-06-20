@@ -11,7 +11,7 @@ using backend.Models.Data;
 
 namespace backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class ReposController : ControllerBase
     {
@@ -33,12 +33,13 @@ namespace backend.Controllers
             Debug.WriteLine($"{_directory}");
         }
 
-        [HttpGet("Files")]
-        public ActionResult GetFiles(string repo, string path = "/")
+        [HttpGet("files")]
+        public ActionResult GetFiles(string username, string repo, string path = "")
         {
             try
             {
-                string repoPath = $"{_directory}{repo}/{path}";
+                string repoPath = $"{_directory}{username}/{repo}/{path}";
+                if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
                 List<file> files = new List<file>();
                 foreach (var f in Directory.GetFiles(repoPath))
                 {
@@ -51,14 +52,16 @@ namespace backend.Controllers
                         var tmp = fileName.Split('.');
                         type = tmp[tmp.Length - 1];
                     }
-                    var url = $"{_domain}{repo}/{fileName}";
+                    var url = $"{_domain}/api/files?username={username}&repo={repo}&path={path}/{fileName}";
                     files.Add(new file(fileName, type == "" ? "regular file" : type, url));
                 }
                 foreach (var f in Directory.GetDirectories(repoPath))
                 {
                     var splittedDirName = f.Split('/');
                     var dirName = splittedDirName[splittedDirName.Length - 1];
-                    var url = $"{_domain}{repo}/{dirName}";
+                    var url = $"{_domain}/api/files?username={username}&repo={repo}&path={path}/{dirName}";
+
+                    // var url = $"{_domain}{repo}/{dirName}";
                     files.Add(new file(dirName, "directory", url));
                 }
                 return Ok(new { files = files.ToArray() });
@@ -69,24 +72,24 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("Download")]
-        public ActionResult Download(string repo)
+        [HttpGet("download")]
+        public ActionResult Download(string username, string repo)
         {
-            var repoDir = new DirectoryInfo($"{_directory}{repo}/");
-            var zipName = new FileInfo($"{_directory}{repo}.zip");
+            var repoDir = new DirectoryInfo($"{_directory}{username}/{repo}/");
+            var zipName = new FileInfo($"{_directory}{username}/{repo}.zip");
             if (!repoDir.Exists) return NotFound(repoDir);
             if (zipName.Exists) System.IO.File.Delete(zipName.FullName);
             ZipFile.CreateFromDirectory(repoDir.FullName, zipName.FullName);
             return new FileContentResult(System.IO.File.ReadAllBytes(zipName.FullName), "application/zip");
         }
 
-        [HttpGet("Star")]
+        [HttpPatch("star")]
         public ActionResult Star(string username, string repository)
         {
             var user = _db.Users.Where(u => u.UserName == username).FirstOrDefault();
-            if (user == null) Redirect("login");
+            if (user == null) NotFound($"User `{username}` not found");
             var repo = _db.Repos.Where(r => r.Name == repository && r.UserId == user.Id).FirstOrDefault();
-            if (repo == null) return NotFound("تستهبل؟!");
+            if (repo == null) return NotFound($"Repository `{repository}` not found");
             try
             {
                 _db.Repos.Where(r => r.Name == repo.Name && r.UserId == repo.UserId).Single().Stars++;
@@ -100,13 +103,13 @@ namespace backend.Controllers
         }
 
 
-        [HttpGet("Watch")]
+        [HttpGet("watch")]
         public ActionResult Watch(string username, string repository)
         {
             var user = _db.Users.Where(u => u.UserName == username).FirstOrDefault();
-            if (user == null) Redirect("login");
+            if (user == null) NotFound($"User `{username}` not found");
             var repo = _db.Repos.Where(r => r.Name == repository && r.UserId == user.Id).FirstOrDefault();
-            if (repo == null) return NotFound("تستهبل؟!");
+            if (repo == null) return NotFound($"Repository `{repository}` not found");
             try
             {
                 _db.Repos.Where(r => r.Name == repo.Name && r.UserId == repo.UserId).Single().Watch++;
@@ -119,11 +122,24 @@ namespace backend.Controllers
             }
         }
 
-        // [HttpGet("Fork")]
-        // public ActionResult Fork()
-        // {
-        //     return Ok();
-        // }
+        [HttpGet("fork")]
+        public ActionResult Fork(string fromUsername, string repository, string toUsername)
+        {
+            var fromDir = new DirectoryInfo($"{_directory}{fromUsername}/{repository}");
+            if (fromDir.Exists)
+            {
+                var toDir = new DirectoryInfo($"{_directory}{toUsername}/{repository}");
+                if (toDir.Exists)
+                    return Conflict("The repository {toUsername}/{repository} already exists");
+                Directory.CreateDirectory(toDir.FullName);
+                this.CopyFilesRecursively(fromDir, toDir);
+                return Ok();
+            }
+            else
+            {
+                return NotFound($"The repo {fromUsername}/{repository} was not found");
+            }
+        }
 
         [HttpGet("branches/{RepoName}")]
         public ActionResult GetBranches(string RepoName)
@@ -151,11 +167,13 @@ namespace backend.Controllers
         }
 
 
-        [HttpPost("[action]")]
-        public IActionResult Clone(string Url)
+        [HttpPost("clone")]
+        public IActionResult Clone(string Url, string user)
         {
             string repoName = Url.Split("/")[^1];
-            string repoPath = _directory + repoName;
+            var userDir = new DirectoryInfo(_directory + user);
+            if (!userDir.Exists) userDir.Create();
+            string repoPath = userDir.FullName + repoName;
             try
             {
                 Repository.Clone(Url, repoPath);
@@ -166,6 +184,7 @@ namespace backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
+
         [HttpGet("[action]/{RepoName}")]
         public IActionResult Repo(string RepoName)
         {
@@ -240,6 +259,7 @@ namespace backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
+
         private static void DeleteDirectory(string directory)
         {
             foreach (string subdirectory in Directory.EnumerateDirectories(directory))
@@ -255,6 +275,14 @@ namespace backend.Controllers
                 fileInfo.Delete();
             }
             Directory.Delete(directory);
+        }
+
+        private void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
+        {
+            foreach (DirectoryInfo dir in source.GetDirectories())
+                CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
+            foreach (FileInfo file in source.GetFiles())
+                file.CopyTo(Path.Combine(target.FullName, file.Name));
         }
     }
 }
