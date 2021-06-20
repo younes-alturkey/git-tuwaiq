@@ -113,7 +113,6 @@ namespace backend.Controllers
             }
         }
 
-
         [HttpGet("watch")]
         public ActionResult Watch(string username, string repository)
         {
@@ -256,6 +255,7 @@ namespace backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
+
         [HttpGet("[action]/{RepoName}")]
         public IActionResult Exists(string RepoName)
         {
@@ -279,14 +279,27 @@ namespace backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
-        [HttpPost("[action]/{RepoName}")]
-        public IActionResult Init(string RepoName)
+
+        [HttpPost("init")]
+        public IActionResult Init(string username, string repo)
         {
             try
             {
-                string newRepo = _directory + RepoName + ".git";
+                var user = _db.Users.Where(user => user.UserName == username).FirstOrDefault();
+                if (user == null) return StatusCode(401, "User does not exist");
+                var userDir = new DirectoryInfo(_directory + username);
+                if (!userDir.Exists) userDir.Create();
+                string newRepo = userDir.FullName + repo;
                 Repository.Init(newRepo);
-                return Ok(new { Status = "Initialized", Repo = RepoName + ".git" });
+                _db.Repos.Add(new Models.RepoModel()
+                {
+                    CreatedAt = DateTime.Now,
+                    Description = "New Repo",
+                    Name = repo,
+                    User_Id = user,
+                    UserId = user.Id,
+                });
+                return Ok(new { Status = "Initialized", Repo = repo });
             }
             catch (Exception error)
             {
