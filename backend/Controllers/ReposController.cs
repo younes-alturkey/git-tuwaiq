@@ -271,7 +271,7 @@ namespace backend.Controllers
         {
             try
             {
-                var repoDir = new DirectoryInfo(_directory + username + repo);
+                var repoDir = new DirectoryInfo($"{_directory}{username}\\{repo}");
                 var repoObj = new Repository(repoDir.FullName);
                 return Ok(new { repo });
             }
@@ -315,7 +315,7 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = _directory + username + repo;
+                string repoPath = $"{_directory}{username}\\{repo}";
                 var repos = Directory.GetDirectories(_directory);
                 foreach (var directory in repos)
                 {
