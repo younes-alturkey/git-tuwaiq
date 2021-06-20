@@ -21,6 +21,20 @@ namespace backend.Controllers
             _context = context;
         }
 
+
+        public class LoginDTO
+        {
+            public string Email { get; set; }
+            public string Password { get; set; }
+        }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDTO login)
+        {
+            UserModel user = _context.Users.Where(user => login.Email == user.Email && login.Password == user.Password).FirstOrDefault();
+            if (user == null) return BadRequest("email or passward not correct");
+            return Ok(user);
+        }
+
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()

@@ -28,6 +28,10 @@ namespace backend
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GitTuwaiq", Version = "v1" });
+            });
             services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
@@ -37,10 +41,7 @@ namespace backend
                        .AllowAnyHeader()
                        .WithExposedHeaders("Content-Disposition");
             }));
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GitTuwaiq", Version = "v1" });
-            });
+           
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
