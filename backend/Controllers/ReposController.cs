@@ -158,6 +158,9 @@ namespace backend.Controllers
                     return Conflict("The repository {toUsername}/{repository} already exists");
                 Directory.CreateDirectory(toDir.FullName);
                 this.CopyFilesRecursively(fromDir, toDir);
+
+                _db.Repos.Where(r => r.Name == repository).Single().Forks++;
+                _db.SaveChanges();
                 return Ok();
             }
             else
@@ -167,8 +170,8 @@ namespace backend.Controllers
         }
 
         
-        [HttpGet("commits")]
-        public ActionResult GetCommits(RepoDTO repo)
+        [HttpPost("commits")]
+        public IActionResult GetCommits(RepoDTO repo)
         {
             try
             {

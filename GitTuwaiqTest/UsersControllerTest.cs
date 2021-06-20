@@ -64,7 +64,7 @@ namespace RSDC_UnitTests
             // Assert
             var objectResult = Assert.IsType<OkObjectResult>(result);
             var Users = Assert.IsAssignableFrom<IEnumerable<UserModel>>(objectResult.Value);
-            Assert.Equal(6, Users.Count());
+            Assert.Equal(10, Users.Count());
         }
 
         [Fact]
@@ -170,7 +170,7 @@ namespace RSDC_UnitTests
             var controller = new UsersController(_context);
 
             // Act
-            var result = await controller.DeleteUserModel(1);
+            var result = await controller.DeleteUserModel(4);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
