@@ -5,7 +5,7 @@ import { FiPlus } from "react-icons/fi";
 import { useHistory } from 'react-router-dom'
 import Clone from "./Clone";
 import Logo from "../assets/img/logo.png";
-import { VscRepoClone, VscChromeClose,VscCloudDownload, VscSignOut } from "react-icons/vsc";
+import { VscSignOut } from "react-icons/vsc";
 
 const NavBar = () => {
   const history = useHistory()
@@ -21,6 +21,7 @@ const NavBar = () => {
         <LinkContainer style={{ cursor: "pointer" }} to="/">
           <Navbar.Brand>
             <img
+              alt="logo"
               style={{ marginRight: 10 }}
               src={Logo}
               width={32}

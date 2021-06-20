@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import HomeView from './views/HomeView'
 import ErrorView from './views/ErrorView'
@@ -11,8 +11,6 @@ import ExploreView from './views/ExploreView'
 import AuthView from './Components/AuthView'
 
 export default function App() {
-  const user = JSON.parse(localStorage.getItem("User"))
-
 
   return (  
     <Router>

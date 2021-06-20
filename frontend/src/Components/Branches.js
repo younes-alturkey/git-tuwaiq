@@ -12,18 +12,17 @@ export default function Branches(props) {
   const [branches, setBranches] = useState(()=>[]);
   useEffect(() => {
     getBranches();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const getBranches =()=>{
-    const username = user && user.userName
-       axios.post("/api/Branches",{ username:user.userName, repo: repo }).then((res)=>{
-               console.log(res.data.branches);
+       axios.post("/api/Branches",{ username: user && user.userName, repo: repo }).then((res)=>{
                setBranches(res.data.branches);
        }).catch(err=>{
            console.log("err:", err);
        })
   };
   const allBranches = branches.map((el)=>{
-    return <li><a class="dropdown-item" href="#">{el}</a></li>
+    return <li>{el}</li>
   });
 
     return (

@@ -12,6 +12,7 @@ export default function Commits() {
     const [commits, setCommits] = useState(()=>[]);
     useEffect(() => {
         getCommits();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getCommits = ()=>{

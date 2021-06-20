@@ -1,6 +1,5 @@
 import React from "react";
-import { CardGroup, Card ,Col} from "react-bootstrap";
-import axios from 'axios';
+import { Card ,Col} from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 const Cards = (props) => {
   let history = useHistory();
@@ -14,10 +13,6 @@ const Cards = (props) => {
       <Card onClick={()=> handleRepo()}>
         <Card.Body>
           <Card.Title>{props.all}</Card.Title>
-          {/* <Card.Text>
-            This is a longer card with supporting text below as a natural
-            lead-in to additional content. This content is a little bit longer.
-          </Card.Text> */}
         </Card.Body>
       </Card>
     </Col>

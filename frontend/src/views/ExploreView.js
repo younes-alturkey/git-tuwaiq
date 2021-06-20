@@ -40,7 +40,7 @@ const ExploreView = ()=> {
                             <h6 style={{ margin:"auto" , color: "#000" ,padding:"0.5em"}}> [ REPO NAME ] </h6>
                             <h4 style={{ textAlign:"center", color: "#6c757d" ,padding:"0.5em"}} > {e.name} </h4>  
                             <h6 style={{ margin:"auto" , color: "#000" ,padding:"0.5em"}}> [ CREATED BY ]  </h6>
-                            <h4 style={{ textAlign:"center", color: "#6c757d" ,padding:"0.5em"}} > {Users.length !== 0 && Users.filter(m=>m.id === e.userId)[0].name} </h4> 
+                            <h4 style={{ textAlign:"center", color: "#6c757d" ,padding:"0.5em"}} > {Users.length !== 0 && Users.filter(m=>m.id === e.userId).name} </h4> 
                             </div>  {/* Card Container */}
                             </div> 
 

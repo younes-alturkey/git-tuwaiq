@@ -11,9 +11,10 @@ export default function HomeView() {
   const [arr, setaArr] = useState(()=>["jjjjjj"])
   
   useEffect(() => {
-    axios.post('/api/users/repos', {username: user.userName}).then(response => {
+    axios.post('/api/users/repos', {username: user && user.userName}).then(response => {
     setaArr(prev=>prev = response.data)
-  })
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
   let all = arr.map((elem) => {

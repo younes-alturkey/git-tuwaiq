@@ -1,12 +1,12 @@
 import React , {useState} from 'react'
-import { useHistory, Redirect } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Notification } from 'rsuite';
 import 'rsuite/dist/styles/rsuite-default.css'
 import axios from 'axios'
 
 const loginUser = {
-    email:"",
-    password:""
+    email:"younes.alturkey@tuwaiq.edu.sa",
+    password:"admin"
 }
 
 const tmpNewUser = {

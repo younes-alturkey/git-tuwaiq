@@ -1,16 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
 import axios from "axios";
 
-const emptyUser = {
-  id: 3,
-  username: "",
-  name: "",
-  email: "",
-  password: "",
-  createdAt: "",
-};
 const Profile = () => {
   const loggedUser = JSON.parse(localStorage.getItem("User"));
   const history = useHistory();

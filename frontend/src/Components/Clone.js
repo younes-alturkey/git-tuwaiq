@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import {Container,Modal,FormControl,InputGroup} from "react-bootstrap";
+import React, { useState } from "react";
+import {InputGroup} from "react-bootstrap";
 import { VscRepoClone, VscChromeClose,VscCloudDownload } from "react-icons/vsc";
 import axios from 'axios'
 import { useHistory } from "react-router-dom";
-import { ButtonToolbar,IconButton, Drawer ,Button,Icon } from 'rsuite';
+import { Drawer ,Button} from 'rsuite';
 import 'rsuite/dist/styles/rsuite-default.css'
 
 const Clone = () => {
@@ -14,7 +14,7 @@ const Clone = () => {
   const [textClone, setTextClone] = useState(()=>null);
 
   const handleClose = () => setShow((prev)=> prev = false);
-  const handleShow = () => setShow((prev)=> prev = true);
+  // const handleShow = () => setShow((prev)=> prev = true);
 
   const postClone = ()=> {
      axios.post("/api/repos/clone?url="+textClone)
@@ -33,9 +33,9 @@ const open = () => {
   setShow((prev)=> prev = true)
 }
 
-const toggleDrawer = (placement) => {
-  setShow((prev)=> prev = true)
-}
+// const toggleDrawer = (placement) => {
+//   setShow((prev)=> prev = true)
+// }
   return (
     <>
     
