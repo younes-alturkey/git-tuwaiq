@@ -19,6 +19,7 @@ namespace backend.Controllers
         private readonly string _domain = "https://backend20210620132023.azurewebsites.net/";
         private readonly AppDbContext _db;
         public record file(string name, string type, string url);
+
         public ReposController(AppDbContext db)
         {
             _db = db;
@@ -80,13 +81,15 @@ namespace backend.Controllers
         }
 
         [HttpGet("Star")]
-        public ActionResult Star(string username, string repo)
+        public ActionResult Star(string username, string repository)
         {
-            if (!_db.Users.Where(u => u.UserName == username).Any()) return Redirect("login");
-            if (!_db.Repos.Where(r => r.Name == repo).Any()) return NotFound("تستهبل؟!");
+            var user = _db.Users.Where(u => u.UserName == username).FirstOrDefault();
+            if (user == null) Redirect("login");
+            var repo = _db.Repos.Where(r => r.Name == repository && r.UserId == user.Id).FirstOrDefault();
+            if (repo == null) return NotFound("تستهبل؟!");
             try
             {
-                _db.Repos.Where(r => r.Name == repo).Single().Stars++;
+                _db.Repos.Where(r => r.Name == repo.Name && r.UserId == repo.UserId).Single().Stars++;
                 _db.SaveChanges();
                 return Ok();
             }
@@ -97,30 +100,30 @@ namespace backend.Controllers
         }
 
 
-        // [HttpGet("Watch")]
-        // public ActionResult Watch(string username, string repository)
-        // {
-        //     var user = _db.Users.Where(u => u.UserName == username).FirstOrDefault();
-        //     if(user == null) Redirect("login");
-        //     var repo = _db.Repos.Where(r => r.Name == repository && r.User_Id == user.Id)
-        //     if (!_db.Repos.Where(r => r.Name == repo).Any()) return NotFound("تستهبل؟!");
-        //     try
-        //     {
-        //         _db.Repos.Where(r => r.Name == repo).Single().Watch++;
-        //         _db.SaveChanges();
-        //         return Ok();
-        //     }
-        //     catch
-        //     {
-        //         return BadRequest("Repo does not exist in our DB (our DBA is drunk)");
-        //     }
-        // }
-
-        [HttpGet("Fork")]
-        public ActionResult Fork()
+        [HttpGet("Watch")]
+        public ActionResult Watch(string username, string repository)
         {
-            return Ok();
+            var user = _db.Users.Where(u => u.UserName == username).FirstOrDefault();
+            if (user == null) Redirect("login");
+            var repo = _db.Repos.Where(r => r.Name == repository && r.UserId == user.Id).FirstOrDefault();
+            if (repo == null) return NotFound("تستهبل؟!");
+            try
+            {
+                _db.Repos.Where(r => r.Name == repo.Name && r.UserId == repo.UserId).Single().Watch++;
+                _db.SaveChanges();
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest("Repo does not exist in our DB (our DBA is drunk)");
+            }
         }
+
+        // [HttpGet("Fork")]
+        // public ActionResult Fork()
+        // {
+        //     return Ok();
+        // }
 
         [HttpGet("branches/{RepoName}")]
         public ActionResult GetBranches(string RepoName)
@@ -214,6 +217,7 @@ namespace backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
+
         [HttpDelete("[action]/{RepoName}")]
         public IActionResult Delete(string RepoName)
         {
