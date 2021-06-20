@@ -25,11 +25,10 @@
 
 ## Key Features
 
--
--
--
--
--
+- Secure
+- Fast
+- Flex
+- Pepe
 
 </div>
 <br/>
@@ -72,7 +71,7 @@ npm start
 
 ## Tech Stack
 
-### <a href="">Backend</a>
+### <a href="https://backend20210620132023.azurewebsites.net/swagger/index.html">Backend</a>
 
 - .NET Core 5 Web API
 - Entity Framework - Code First Approach
@@ -111,8 +110,6 @@ npm start
 > Faisal Alsagri ➝ [@FaisalAlsagri](https://github.com/FaisalAlsagri)
 
 > Ibrahim Alobaysi ➝ [@ibra0022](https://github.com/ibra0022)
-
-> Hussain Alghamdi ➝ [@HussainAlghamdi](https://github.com/HussainAlghamdi)
 
 > Abdullah AL Haif ➝ [@Abdullah-ALHaif](https://github.com/Abdullah-ALHaif)
 
