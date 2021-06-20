@@ -31,6 +31,18 @@ namespace backend.Controllers
             public string firstParentSha { set; get; }
             public string secondParentSha { set; get; }
         }
+        
+        public class RepoDTO
+        {
+            public string Username { get; set; }
+            public string Repo { get; set; }
+        }
+        public class RepoFilesDTO
+        {
+            public string Username { get; set; }
+            public string Repo { get; set; }
+            public string Path { get; set; } = "";
+        }
 
         public ReposController(AppDbContext db)
         {
@@ -45,11 +57,11 @@ namespace backend.Controllers
         }
 
         [HttpGet("files")]
-        public ActionResult GetFiles(string username, string repo, string path = "")
+        public ActionResult GetFiles(RepoFilesDTO dto)
         {
             try
             {
-                string repoPath = $"{_directory}{username}/{repo}/{path}";
+                string repoPath = $"{_directory}{dto.Username}/{dto.Repo}/{dto.Path}";
                 if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
                 List<file> files = new List<file>();
                 foreach (var f in Directory.GetFiles(repoPath))
@@ -63,14 +75,14 @@ namespace backend.Controllers
                         var tmp = fileName.Split('.');
                         type = tmp[tmp.Length - 1];
                     }
-                    var url = $"{_domain}/api/files?username={username}&repo={repo}&path={path}/{fileName}";
+                    var url = $"{_domain}/api/files?username={dto.Username}&repo={dto.Repo}&path={dto.Path}/{fileName}";
                     files.Add(new file(fileName, type == "" ? "regular file" : type, url));
                 }
                 foreach (var f in Directory.GetDirectories(repoPath))
                 {
                     var splittedDirName = f.Split('/');
                     var dirName = splittedDirName[splittedDirName.Length - 1];
-                    var url = $"{_domain}/api/files?username={username}&repo={repo}&path={path}/{dirName}";
+                    var url = $"{_domain}/api/files?username={dto.Username}&repo={dto.Repo}&path={dto.Path}/{dirName}";
 
                     // var url = $"{_domain}{repo}/{dirName}";
                     files.Add(new file(dirName, "directory", url));
@@ -154,11 +166,7 @@ namespace backend.Controllers
             }
         }
 
-        public class RepoDTO
-        {
-            public string Username { get; set; }
-            public string Repo { get; set; }
-        }
+        
         [HttpGet("commits")]
         public ActionResult GetCommits(RepoDTO repo)
         {
