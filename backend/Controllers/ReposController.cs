@@ -30,6 +30,18 @@ namespace backend.Controllers
             public string firstParentSha { set; get; }
             public string secondParentSha { set; get; }
         }
+        
+        public class RepoDTO
+        {
+            public string Username { get; set; }
+            public string Repo { get; set; }
+        }
+        public class RepoFilesDTO
+        {
+            public string Username { get; set; }
+            public string Repo { get; set; }
+            public string Path { get; set; } = "";
+        }
 
         public ReposController(AppDbContext db)
         {
@@ -44,11 +56,11 @@ namespace backend.Controllers
         }
 
         [HttpGet("files")]
-        public ActionResult GetFiles(string username, string repo, string path = "")
+        public ActionResult GetFiles(RepoFilesDTO dto)
         {
             try
             {
-                string repoPath = $"{_directory}{username}/{repo}/{path}";
+                string repoPath = $"{_directory}{dto.Username}/{dto.Repo}/{dto.Path}";
                 if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
                 List<file> files = new List<file>();
                 foreach (var f in Directory.GetFiles(repoPath))
@@ -62,14 +74,14 @@ namespace backend.Controllers
                         var tmp = fileName.Split('.');
                         type = tmp[tmp.Length - 1];
                     }
-                    var url = $"{_domain}/api/files?username={username}&repo={repo}&path={path}/{fileName}";
+                    var url = $"{_domain}/api/files?username={dto.Username}&repo={dto.Repo}&path={dto.Path}/{fileName}";
                     files.Add(new file(fileName, type == "" ? "regular file" : type, url));
                 }
                 foreach (var f in Directory.GetDirectories(repoPath))
                 {
                     var splittedDirName = f.Split('/');
                     var dirName = splittedDirName[splittedDirName.Length - 1];
-                    var url = $"{_domain}/api/files?username={username}&repo={repo}&path={path}/{dirName}";
+                    var url = $"{_domain}/api/files?username={dto.Username}&repo={dto.Repo}&path={dto.Path}/{dirName}";
 
                     // var url = $"{_domain}{repo}/{dirName}";
                     files.Add(new file(dirName, "directory", url));
@@ -83,10 +95,10 @@ namespace backend.Controllers
         }
 
         [HttpGet("download")]
-        public ActionResult Download(string username, string repo)
+        public ActionResult Download(RepoDTO repoObj)
         {
-            var repoDir = new DirectoryInfo($"{_directory}{username}/{repo}/");
-            var zipName = new FileInfo($"{_directory}{username}/{repo}.zip");
+            var repoDir = new DirectoryInfo($"{_directory}{repoObj.Username}/{repoObj.Repo}/");
+            var zipName = new FileInfo($"{_directory}{repoObj.Username}/{repoObj.Repo}.zip");
             if (!repoDir.Exists) return NotFound(repoDir);
             if (zipName.Exists) System.IO.File.Delete(zipName.FullName);
             ZipFile.CreateFromDirectory(repoDir.FullName, zipName.FullName);
@@ -94,12 +106,12 @@ namespace backend.Controllers
         }
 
         [HttpPatch("star")]
-        public ActionResult Star(string username, string repository)
+        public ActionResult Star(RepoDTO repoObj)
         {
-            var user = _db.Users.Where(u => u.UserName == username).FirstOrDefault();
-            if (user == null) NotFound($"User `{username}` not found");
-            var repo = _db.Repos.Where(r => r.Name == repository && r.UserId == user.Id).FirstOrDefault();
-            if (repo == null) return NotFound($"Repository `{repository}` not found");
+            var user = _db.Users.Where(u => u.UserName == repoObj.Username).FirstOrDefault();
+            if (user == null) NotFound($"User `{repoObj.Username}` not found");
+            var repo = _db.Repos.Where(r => r.Name == repoObj.Repo && r.UserId == user.Id).FirstOrDefault();
+            if (repo == null) return NotFound($"Repository `{repoObj.Repo}` not found");
             try
             {
                 _db.Repos.Where(r => r.Name == repo.Name && r.UserId == repo.UserId).Single().Stars++;
@@ -113,12 +125,12 @@ namespace backend.Controllers
         }
 
         [HttpGet("watch")]
-        public ActionResult Watch(string username, string repository)
+        public ActionResult Watch(RepoDTO repoObj)
         {
-            var user = _db.Users.Where(u => u.UserName == username).FirstOrDefault();
-            if (user == null) NotFound($"User `{username}` not found");
-            var repo = _db.Repos.Where(r => r.Name == repository && r.UserId == user.Id).FirstOrDefault();
-            if (repo == null) return NotFound($"Repository `{repository}` not found");
+            var user = _db.Users.Where(u => u.UserName == repoObj.Username).FirstOrDefault();
+            if (user == null) NotFound($"User `{repoObj.Username}` not found");
+            var repo = _db.Repos.Where(r => r.Name == repoObj.Repo && r.UserId == user.Id).FirstOrDefault();
+            if (repo == null) return NotFound($"Repository `{repoObj.Repo}` not found");
             try
             {
                 _db.Repos.Where(r => r.Name == repo.Name && r.UserId == repo.UserId).Single().Watch++;
@@ -150,11 +162,7 @@ namespace backend.Controllers
             }
         }
 
-        public class RepoDTO
-        {
-            public string Username { get; set; }
-            public string Repo { get; set; }
-        }
+        
         [HttpGet("commits")]
         public ActionResult GetCommits(RepoDTO repo)
         {
@@ -206,11 +214,11 @@ namespace backend.Controllers
 
 
 [HttpGet("branches")]
-        public ActionResult GetBranches(string username, string repo)
+        public ActionResult GetBranches(RepoDTO repo)
         {
             try
             {
-                string repoPath = $"{_directory}{username}/{repo}";
+                string repoPath = $"{_directory}{repo.Username}/{repo.Repo}";
                 if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
                 var repository = new Repository(repoPath);
                 var branches = repository.Branches.ToArray();
