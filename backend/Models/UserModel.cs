@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace backend.Models
 {
@@ -17,6 +18,7 @@ namespace backend.Models
         
         
          // one  to many with repos   
+         [JsonIgnore]
          public List<RepoModel> Repos { set; get; }
         
     }

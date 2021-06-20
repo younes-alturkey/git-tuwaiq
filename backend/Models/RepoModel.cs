@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace backend.Models
 {
@@ -15,9 +17,16 @@ namespace backend.Models
         public bool isPublic { set; get; }
 
         public string Description { get; set; }
-        // one to many User => Repos 
-        public UserModel User_Id { get; set; }
+        [ForeignKey("User_Id")]
+
+        public int UserId { get; set; }
         
+        // one to many User => Repos 
+        
+        // Navigator
+        [JsonIgnore]
+        public UserModel User_Id { get; set; }
+        [JsonIgnore]
         // on to many Repo => issues 
         public List<RepoModel> Issues { set; get;  }
 
