@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://gittuwaiq.netlify.app/"><img src="https://i.stack.imgur.com/y9DpT.jpg" alt="demo"/></a>
+  <a href="https://gittuwaiq.netlify.app/"><img src="https://raw.githubusercontent.com/YounesAlturkey/gittuwaiq/main/files/demo.png" alt="demo"/></a>
 </p>
 
 <br/>
