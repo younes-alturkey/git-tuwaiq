@@ -19,6 +19,17 @@ namespace backend.Controllers
         private readonly string _domain = "https://backend20210620132023.azurewebsites.net/";
         private readonly AppDbContext _db;
         public record file(string name, string type, string url);
+        
+        public record commit
+        {
+            public string sha { set; get; }
+            public string message{ set; get; }
+            public string autherName { set; get; }
+            public string autherEmail { set; get; }
+            public string time { set; get; }
+            public string? firstParentSha { set; get; }
+            public string? secondParentSha { set; get; }
+        }
 
         public ReposController(AppDbContext db)
         {
@@ -158,6 +169,52 @@ namespace backend.Controllers
                 return Ok(new
                 {
                     branches = branchesNames
+                });
+            }
+            catch (Exception error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
+            }
+        }
+
+        [HttpGet("commits/{RepoName}")]
+        public ActionResult GetCommits(string RepoName)
+        {
+            try
+            {
+                string repoPath = _directory + RepoName;
+                var repo = new Repository(repoPath);
+                var commits = repo.Commits.ToArray();
+                List<commit> commitsNames = new List<commit>();
+
+                for (int i = 0; i < commits.Length; i++)
+                {
+                    commitsNames.Add(new commit
+                    {
+                        sha = commits[i].Sha,
+                        message = commits[i].Message,
+                        autherName = commits[i].Author.Name,
+                        autherEmail = commits[i].Author.Email,
+                        time = commits[i].Author.When.ToString()
+                    });
+                    if (commits[i].Parents.ToArray().Length > 0)
+                    {
+
+                        int length = commits[i].Parents.ToArray().Length;
+                        Console.WriteLine(commits[i].Parents.ToArray()[0].Sha);
+                        commitsNames[i].firstParentSha = commits[i].Parents.ToArray()[0].Sha;
+                        length--;
+
+                        if (length > 0)
+                        {
+                            commitsNames[i].secondParentSha.Insert(0, commits[i].Parents.ToArray()[1].Sha);
+                        }
+                    }
+                }
+
+                return Ok(new
+                {
+                    commits = commitsNames
                 });
             }
             catch (Exception error)
