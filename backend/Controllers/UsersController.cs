@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,10 +16,19 @@ namespace backend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly string _directory = $"{Environment.GetEnvironmentVariable("TEMP")}/repos/";
+        private readonly string _domain = "https://backend20210620132023.azurewebsites.net/";
 
         public UsersController(AppDbContext context)
         {
             _context = context;
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Unix:
+                case PlatformID.MacOSX:
+                    _directory = "/tmp/repos/";
+                    break;
+            }
         }
 
 
@@ -112,6 +122,14 @@ namespace backend.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("repos")]
+        public ActionResult GetRepos(string username)
+        {
+            var userDir = new DirectoryInfo(_directory);
+            if (!userDir.Exists) return NotFound("I never heard of such a username before. Are you drunk?");
+            return Ok(Directory.GetDirectories(userDir.FullName));
         }
 
         private bool UserModelExists(int id)

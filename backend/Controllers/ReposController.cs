@@ -41,7 +41,6 @@ namespace backend.Controllers
                     _directory = "/tmp/repos/";
                     break;
             }
-            Debug.WriteLine($"{_directory}");
         }
 
         [HttpGet("files")]
