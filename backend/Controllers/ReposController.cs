@@ -218,11 +218,11 @@ namespace backend.Controllers
 
 
         [HttpGet("branches")]
-        public ActionResult GetBranches(string username, string repo)
+        public ActionResult GetBranches(RepoDTO repo)
         {
             try
             {
-                string repoPath = $"{_directory}{username}\\{repo}";
+                string repoPath = $"{_directory}{repo.Username}\\{repo.Repo}";
                 if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
                 var repository = new Repository(repoPath);
                 var branches = repository.Branches.ToArray();
