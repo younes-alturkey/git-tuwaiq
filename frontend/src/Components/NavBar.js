@@ -1,39 +1,72 @@
-import React from 'react';
-import { Container, Navbar, Nav, Image } from 'react-bootstrap';
-import {LinkContainer} from 'react-router-bootstrap'
-import { FiPlus } from 'react-icons/fi';
+import React from "react";
+import { Container, Navbar, Nav, Image } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { FiPlus } from "react-icons/fi";
+import Clone from "./Clone";
+import Logo from "../assets/img/logo.png";
+import { VscRepoClone, VscChromeClose,VscCloudDownload } from "react-icons/vsc";
+
 const NavBar = () => {
-    return (
-        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-  <Container>
-  <Navbar.Brand href="#home">GitTuwaiq</Navbar.Brand>
-  <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-  <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">
-              <LinkContainer to="/issues">
+  return (
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Container>
+        <LinkContainer style={{ cursor: "pointer" }} to="/">
+          <Navbar.Brand>
+            <img
+              style={{ marginRight: 10 }}
+              src={Logo}
+              width={32}
+              height={32}
+            />
+            GitTuwaiq
+          </Navbar.Brand>
+        </LinkContainer>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <LinkContainer style={{ cursor: "pointer" }} to="/issues">
               <Nav.Link>Issues</Nav.Link>
-              </LinkContainer>
-      {/* <Nav.Link href="#pricing">Pricing</Nav.Link>
-      <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-        <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-        <NavDropdown.Divider />
-        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-      </NavDropdown> */}
-    </Nav>
-    <Nav>
-      {/* <Nav.Link href="#deets">More deets</Nav.Link>
-      <Nav.Link eventKey={2} href="#memes">
-        Dank memes
-      </Nav.Link> */}
-      <FiPlus style={{color: "white",marginTop:"20px", marginRight: "10px"}}/>
-      <Image width="50" src="https://i.pinimg.com/originals/26/36/7b/26367b882196bab0348c173ec61d9268.gif" roundedCircle />
-    </Nav>
-  </Navbar.Collapse>
-  </Container>
-</Navbar>
-    );
-}
+            </LinkContainer>
+            <LinkContainer style={{ cursor: "pointer" }} to="/explore">
+              <Nav.Link>Explore</Nav.Link>
+            </LinkContainer>
+          </Nav>
+          <Nav>
+            <Nav.Link>
+            <VscRepoClone
+        style={{
+          color: "white",
+          fontSize: "25px",
+          marginTop: "13px",
+          marginRight: "20px",
+        }}
+      />
+            </Nav.Link>
+            <LinkContainer style={{ cursor: "pointer" }} to="/create">
+              <Nav.Link>
+                <FiPlus
+                  style={{
+                    color: "white",
+                    fontSize: "25px",
+                    marginTop: "10px",
+                    marginRight: "20px",
+                  }}
+                />
+              </Nav.Link>
+            </LinkContainer>
+            <LinkContainer style={{ cursor: "pointer" }} to="/profile">
+              <Image
+                width="50"
+                src="https://i.pinimg.com/originals/26/36/7b/26367b882196bab0348c173ec61d9268.gif"
+                roundedCircle
+              />
+            </LinkContainer>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+    
+  );
+};
 
 export default NavBar;

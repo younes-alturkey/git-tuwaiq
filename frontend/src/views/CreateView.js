@@ -1,13 +1,37 @@
-import React from 'react'
+import React,{useState, useEffect}from 'react'
+import { useHistory } from 'react-router-dom'
+import axios from 'axios'
 
 export default function CreateView() {
+    const user = JSON.parse(localStorage.getItem("User"))
+    const history = useHistory()
+    if(!user) history.push("/auth")
+    const [repo, setRepo] = useState(()=>"")
+
+
+    const PostRepo =()=>{
+        console.log("---"+repo+"-------");
+         axios.post("/api/repos/init/"+repo).then((res)=>{
+                 console.log(res.data);
+         }).catch(err=>{
+             console.log("err:", err);
+         })
+    };
+
+
+    const getRepoName =(e)=>{
+        console.log(e.target.value);
+        setRepo(e.target.value)
+    };
+  
+
     return (
         <div className="container mt-5 w-50" style={{backgroundColor:"lightGray"}}>
             <h2 className="text-center"> Create new repo!</h2>
-        <form>
+        <div>
         <div class="mb-3">
             <label for="text" class="form-label">User:</label>
-            <input type="text" class="form-control"  aria-describedby="emailHelp" placeholder="repo name"/>
+            <input onChange={(e) => getRepoName(e)} type="text" class="form-control"  aria-describedby="emailHelp" placeholder="repo name" id="PostRepoName"/>
             <div id="emailHelp" class="form-text">The name must be an unieqe name.</div>
         </div>
         <div class="form-check">
@@ -22,8 +46,8 @@ export default function CreateView() {
             Private
         </label>
         </div>
-        <button type="submit" class="btn btn-dark w-100 mx-auto" style={{margin:"20px"}}>Submit</button>
-        </form>
+        <button onClick={() => PostRepo()} class="btn btn-dark w-100 mx-auto" style={{margin:"20px"}}>Submit</button>
+        </div>
         </div>
     )
 }
