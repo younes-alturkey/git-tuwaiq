@@ -95,7 +95,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("download")]
+        [HttpPost("download")]
         public ActionResult Download(RepoDTO dto)
         {
             var repoDir = new DirectoryInfo($"{_directory}{dto.Username}/{dto.Repo}/");
