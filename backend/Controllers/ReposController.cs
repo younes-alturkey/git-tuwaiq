@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace backend.Controllers
@@ -10,8 +11,42 @@ namespace backend.Controllers
     [ApiController]
     public class ReposController : ControllerBase
     {
-        //Hard coded for MacOS
-        private readonly string _directory = "/Users/younes/Desktop/repos/";
+        // Generic and works fine
+        private readonly string _directory = Environment.GetEnvironmentVariable("TEMP")+"/repos/";
+
+        public record File(string name, string type, string url);
+
+        public ReposController()
+        {
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Unix:
+                case PlatformID.MacOSX:
+                    _directory = "/tmp/";
+                    break;
+            }
+        }
+
+        [HttpGet("Files")]
+        public ActionResult GetFiles(string repo, string path = "/")
+        {
+            try
+            {
+                string repoPath = $"{_directory}{repo}/{path}";
+                List<File> files = new List<File>();
+                foreach (var file in Directory.GetFiles(repoPath))
+                    files.Add(new File(file, "regular file", file));
+                foreach (var file in Directory.GetDirectories(repoPath))
+                    files.Add(new File(file, "directory", $"{file}"));
+
+                return Ok(new {files= files.ToArray() });
+
+            }
+            catch (Exception error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
+            }
+        }
 
         [HttpPost("[action]")]
         public IActionResult Clone(string Url)
@@ -20,8 +55,8 @@ namespace backend.Controllers
             string repoPath = _directory + repoName;
             try
             {
-                Repository.Clone(Url, repoPath);
-                return Ok(new { Status = "Cloned", Repo = repoName });
+                var path = Repository.Clone(Url, repoPath);
+                return Ok(new { Status = "Cloned", Repo = repoName, Path= path });
 
             } catch(Exception error)
             {
@@ -34,7 +69,7 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = _directory + RepoName + ".git";
+                string repoPath = _directory + RepoName;
                 var repo = new Repository(repoPath);
                 return Ok(new { repo });
 
