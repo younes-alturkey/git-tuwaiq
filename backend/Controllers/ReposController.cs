@@ -5,9 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
-
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
@@ -63,45 +60,6 @@ namespace backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
-
-        [HttpGet("Download")]
-        public ActionResult Download(string repo)
-        {
-            var repoDir = new DirectoryInfo($"{_directory}{repo}/");
-            var zipName = new FileInfo($"{_directory}{repo}.zip");
-            if (!repoDir.Exists) return NotFound(repoDir);
-            if (zipName.Exists) System.IO.File.Delete(zipName.FullName);
-            ZipFile.CreateFromDirectory(repoDir.FullName, zipName.FullName);
-            return new FileContentResult(System.IO.File.ReadAllBytes(zipName.FullName), "application/zip");
-        }
-
-
-        [HttpGet("branches/{RepoName}")]
-        public ActionResult GetBranches(string RepoName)
-        {
-            try
-            {
-                string repoPath = _directory + RepoName;
-                var repo = new Repository(repoPath);
-                var branches = repo.Branches.ToArray();
-                List<string> branchesNames = new List<string>();
-                foreach (var branch in branches)
-                {
-                    branchesNames.Add(branch.FriendlyName);
-                }
-
-                return Ok(new
-                {
-                    branches = branchesNames
-                });
-            }
-            catch (Exception error)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
-            }
-        }
-
-
         [HttpPost("[action]")]
         public IActionResult Clone(string Url)
         {
@@ -122,7 +80,7 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = _directory + RepoName;
+                string repoPath = _directory + RepoName + ".git";
                 var repo = new Repository(repoPath);
                 return Ok(new { repo });
             }
