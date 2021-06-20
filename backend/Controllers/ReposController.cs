@@ -96,10 +96,10 @@ namespace backend.Controllers
         }
 
         [HttpGet("download")]
-        public ActionResult Download(string username, string repo)
+        public ActionResult Download(RepoDTO dto)
         {
-            var repoDir = new DirectoryInfo($"{_directory}{username}/{repo}/");
-            var zipName = new FileInfo($"{_directory}{username}/{repo}.zip");
+            var repoDir = new DirectoryInfo($"{_directory}{dto.Username}/{dto.Repo}/");
+            var zipName = new FileInfo($"{_directory}{dto.Username}/{dto.Repo}.zip");
             if (!repoDir.Exists) return NotFound(repoDir);
             if (zipName.Exists) System.IO.File.Delete(zipName.FullName);
             ZipFile.CreateFromDirectory(repoDir.FullName, zipName.FullName);
