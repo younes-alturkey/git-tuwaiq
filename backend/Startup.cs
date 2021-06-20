@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-
+using System;
+using System.IO;
 namespace backend
 {
     public class Startup
@@ -13,6 +14,16 @@ namespace backend
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            string _directory = $"{Environment.GetEnvironmentVariable("TEMP")}/repos/";
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Unix:
+                case PlatformID.MacOSX:
+                    _directory = "/tmp/repos/";
+                    break;
+            }
+            if (!new FileInfo(_directory).Exists)
+                Directory.CreateDirectory(_directory);
         }
 
         public IConfiguration Configuration { get; }

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace backend.Controllers
@@ -10,8 +12,59 @@ namespace backend.Controllers
     [ApiController]
     public class ReposController : ControllerBase
     {
-        //Hard coded for MacOS
-        private readonly string _directory = "/Users/younes/Desktop/repos/";
+        private readonly string _directory = $"{Environment.GetEnvironmentVariable("TEMP")}/repos/";
+        private readonly string _domain = $"gittuwaiq.com/";
+
+        public record file(string name, string type, string url);
+        public ReposController()
+        {
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Unix:
+                case PlatformID.MacOSX:
+                    _directory = "/tmp/repos/";
+                    break;
+            }
+            Debug.WriteLine($"{_directory}");
+
+        }
+
+        [HttpGet("Files")]
+        public ActionResult GetFiles(string repo, string path = "/")
+        {
+            try
+            {
+                string repoPath = $"{_directory}{repo}/{path}";
+                List<file> files = new List<file>();
+                foreach (var f in Directory.GetFiles(repoPath))
+                {
+                    var splittedFileName = f.Split('/');
+                    var fileName = splittedFileName[splittedFileName.Length - 1];
+                    var type = "";
+                    if (fileName.Contains('.'))
+                    {
+                        var tmp = fileName.Split('.');
+                        type = tmp[tmp.Length - 1];
+                    }
+                    var url = $"{_domain}{repo}/{fileName}";
+                    files.Add(new file(fileName, type == "" ? "regular file" : type, url));
+                }
+
+
+                foreach (var f in Directory.GetDirectories(repoPath))
+                {
+                    var splittedDirName = f.Split('/');
+                    var dirName = splittedDirName[splittedDirName.Length - 1];
+                    var url = $"{_domain}{repo}/{dirName}";
+                    files.Add(new file(dirName, "directory", url));
+                }
+                return Ok(new { files = files.ToArray() });
+            }
+            catch (Exception error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
+            }
+        }
 
         [HttpPost("[action]")]
         public IActionResult Clone(string Url)
@@ -23,9 +76,10 @@ namespace backend.Controllers
                 Repository.Clone(Url, repoPath);
                 return Ok(new { Status = "Cloned", Repo = repoName });
 
-            } catch(Exception error)
+            }
+            catch (Exception error)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new{ Status = "Error", Message = error.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
 
@@ -64,7 +118,8 @@ namespace backend.Controllers
 
                 return NotFound(new { Status = "Doesn't Exist", Repo = RepoName });
 
-            } catch (Exception error)
+            }
+            catch (Exception error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
@@ -80,7 +135,8 @@ namespace backend.Controllers
                 Repository.Init(newRepo);
                 return Ok(new { Status = "Initialized", Repo = RepoName + ".git" });
 
-            } catch (Exception error)
+            }
+            catch (Exception error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
