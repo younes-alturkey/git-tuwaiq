@@ -95,7 +95,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("Explore")]
-        public IAsyncEnumerable<RepoModel> Explore() =>_db.Repos.AsAsyncEnumerable();
+        public IAsyncEnumerable<RepoModel> Explore() => _db.Repos.AsAsyncEnumerable();
 
         [HttpPatch("star")]
         public ActionResult Star(string username, string repository)
@@ -209,7 +209,7 @@ namespace backend.Controllers
 
 
 
-[HttpGet("branches")]
+        [HttpGet("branches")]
         public ActionResult GetBranches(string username, string repo)
         {
             try
@@ -245,7 +245,7 @@ namespace backend.Controllers
             if (!userDir.Exists) userDir.Create();
             string repoName = Url.Split("/")[^1];
             if (!userDir.Exists) userDir.Create();
-            string repoPath = userDir.FullName + repoName;
+            string repoPath = userDir.FullName + "/" + repoName;
             try
             {
                 Repository.Clone(Url, repoPath);
@@ -291,7 +291,7 @@ namespace backend.Controllers
                 var userDir = new DirectoryInfo(_directory + username);
                 if (!userDir.Exists) userDir.Create();
 
-                string newRepo = userDir.FullName + repo;
+                string newRepo = userDir.FullName + "/" + repo;
                 Repository.Init(newRepo);
                 _db.Repos.Add(new Models.RepoModel()
                 {
