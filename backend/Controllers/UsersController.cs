@@ -17,7 +17,6 @@ namespace backend.Controllers
     {
         private readonly AppDbContext _context;
         private readonly string _directory = $"{Environment.GetEnvironmentVariable("TEMP")}/repos/";
-        private readonly string _domain = "https://backend20210620132023.azurewebsites.net/";
 
         public UsersController(AppDbContext context)
         {
@@ -40,7 +39,7 @@ namespace backend.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO login)
         {
-            UserModel user = _context.Users.Where(user => login.Email == user.Email && login.Password == user.Password).FirstOrDefault();
+            UserModel user = await _context.Users.Where(user => login.Email == user.Email && login.Password == user.Password).FirstOrDefaultAsync();
             if (user == null) return BadRequest("email or passward not correct");
             return Ok(user);
         }

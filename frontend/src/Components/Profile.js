@@ -1,15 +1,26 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import { Button, Image } from "react-bootstrap";
-import axios from "axios";
+import React, { useState } from "react"
+import { useHistory } from "react-router-dom"
+import { Notification } from "rsuite"
+import { Button, Image } from "react-bootstrap"
+import axios from "axios"
+
+const notify = (msg) => {
+  Notification.open({
+    title: "Notification",
+    description: (
+      <p width={320} rows={3}>
+        {msg}
+      </p>
+    ),
+  })
+}
 
 const Profile = () => {
-  const loggedUser = JSON.parse(localStorage.getItem("User"));
-  const history = useHistory();
-  if (!loggedUser) history.push("/auth");
-  console.log(loggedUser);
-  const [isEdit, setIsEdit] = useState(() => false);
-  const [btnText, setBtnText] = useState(() => "EDIT");
+  const loggedUser = JSON.parse(localStorage.getItem("User"))
+  const history = useHistory()
+  if (!loggedUser) history.push("/auth")
+  const [isEdit, setIsEdit] = useState(() => false)
+  const [btnText, setBtnText] = useState(() => "EDIT")
   const [user, setUser] = useState({
     id: loggedUser && loggedUser.id,
     username: loggedUser && loggedUser.userName,
@@ -18,29 +29,32 @@ const Profile = () => {
     password: loggedUser && loggedUser.password,
     img: loggedUser && loggedUser.imgurl,
     createdAt: loggedUser && loggedUser.createdAt,
-  });
+  })
 
   const UpdateProfile = () => {
     axios
       .put(`/api/users/${user.id}`, user)
       .then((res) => {
-        console.log(res);
+        if (res.status === 204) {
+          notify("Profile updated.")
+          history.push("/")
+        }
       })
       .catch((err) => {
-        console.log(err);
-      });
-  };
+        console.log(err)
+      })
+  }
 
   const handleBtn = () => {
     if (!isEdit) {
-      setBtnText((prev) => (prev = "SAVE"));
-      setIsEdit((prev) => (prev = !prev));
+      setBtnText((prev) => (prev = "SAVE"))
+      setIsEdit((prev) => (prev = !prev))
     } else {
-      setBtnText((prev) => (prev = "EDIT"));
-      setIsEdit((prev) => (prev = !prev));
-      UpdateProfile();
+      setBtnText((prev) => (prev = "EDIT"))
+      setIsEdit((prev) => (prev = !prev))
+      UpdateProfile()
     }
-  };
+  }
 
   return (
     <div className="row">
@@ -73,124 +87,77 @@ const Profile = () => {
           </Button>
         </center>
       </div>
-      {isEdit ? (
-        <div className="col-8 offset-md-1 mt-5 w-50">
-          <h2>Profile</h2>
-          <form className="row g-3">
-            <div className="col-md-6">
-              <label htmlFor="username" className="form-label">
-                User Name:
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="username"
-                value={user.username}
-                onChange={(e) => setUser({ ...user, username: e.target.value })}
-              />
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="name" className="form-label">
-                Name:
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                value={user.name}
-                onChange={(e) => setUser({ ...user, name: e.target.value })}
-              />
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="email" className="form-label">
-                Email:
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                value={user.email}
-                onChange={(e) => setUser({ ...user, email: e.target.value })}
-              />
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="password" className="form-label">
-                Password:
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                value={user.password}
-                onChange={(e) => setUser({ ...user, password: e.target.value })}
-              />
-            </div>
-            <div className="col-md-12">
-              <label htmlFor="joindate" className="form-label">
-                Join Date:
-              </label>
-              <input disabled type="text" className="form-control" />
-            </div>
-          </form>
-        </div>
-      ) : (
-        <div className="col-8 offset-md-1 mt-5 w-50">
-          <h2>Profile</h2>
-          <form className="row g-3">
-            <div className="col-md-6">
-              <label htmlFor="username" className="form-label">
-                User Name:
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                value={user && user.username}
-              />
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="name" className="form-label">
-                Name:
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                value={user && user.name}
-              />
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="email" className="form-label">
-                Email:
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                value={user && user.email}
-              />
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="password" className="form-label">
-                Id:
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                value={user && user.id}
-              />
-            </div>
-            <div className="col-md-12">
-              <label htmlFor="joindate" className="form-label">
-                Join Date:
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                value={user && user.createdAt}
-              />
-            </div>
-          </form>
-        </div>
-      )}
+      <div className="col-8 offset-md-1 mt-5 w-50">
+        <h2>Profile</h2>
+        <form className="row g-3">
+          <div className="col-md-6">
+            <label htmlFor="username" className="form-label">
+              User Name:
+            </label>
+            <input
+              disabled
+              id="username"
+              type="text"
+              className="form-control"
+              value={user.username}
+              onChange={(e) => setUser({ ...user, username: e.target.value })}
+            />
+          </div>
+          <div className="col-md-6">
+            <label htmlFor="name" className="form-label">
+              Name:
+            </label>
+            <input
+              id="name"
+              type="text"
+              className="form-control"
+              disabled={!isEdit}
+              value={user.name}
+              onChange={(e) => setUser({ ...user, name: e.target.value })}
+            />
+          </div>
+          <div className="col-md-6">
+            <label htmlFor="email" className="form-label">
+              Email:
+            </label>
+            <input
+              id="email"
+              type="email"
+              className="form-control"
+              disabled={!isEdit}
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+            />
+          </div>
+          <div className="col-md-6">
+            <label htmlFor="password" className="form-label">
+              Password:
+            </label>
+            <input
+              disabled={!isEdit}
+              id="password"
+              type="password"
+              className="form-control"
+              value={user.password}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
+            />
+          </div>
+          <div className="col-md-12">
+            <label htmlFor="joindate" className="form-label">
+              Join Date:
+            </label>
+            <input
+              id="joinedDate"
+              disabled
+              type="text"
+              className="form-control"
+              value={user && user.createdAt}
+            />
+          </div>
+        </form>
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

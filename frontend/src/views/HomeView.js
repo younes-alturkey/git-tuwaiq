@@ -1,30 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { Button, Image, Row } from "react-bootstrap";
-import axios from "axios";
-import Cards from "../Components/Cards";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react"
+import { Button, Image, Row } from "react-bootstrap"
+import axios from "axios"
+import Cards from "../Components/Cards"
+import { useHistory } from "react-router-dom"
 
 export default function HomeView() {
-  const user = JSON.parse(localStorage.getItem("User"));
-  const history = useHistory();
-  if (!user) history.push("/auth");
-  const [arr, setaArr] = useState(() => ["You repos will appear here."]);
-
+  const user = JSON.parse(localStorage.getItem("User"))
+  const history = useHistory()
+  if (!user) history.push("/auth")
+  const [arr, setaArr] = useState(() => ["Fetching your repos..."])
   useEffect(() => {
-    axios
-      .post("/api/users/repos", { username: user && user.userName })
-      .then((response) => {
-        setaArr((prev) => (prev = response.data));
-      });
+    console.log("here")
+    const fetchUsers = () => {
+      return axios(`/api/users/repos?username=${user && user.userName}`).then(
+        (response) => setaArr(response.data)
+      )
+    }
+    setTimeout(() => {
+      fetchUsers()
+    }, 2000)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
-  let all = arr.map((elem) => {
-    const repoPath = elem.split("\\");
-    const repoName = repoPath[repoPath.length - 1];
-
-    return <Cards all={repoName} />;
-  });
   return (
     <div className="row">
       <div className="col-3">
@@ -51,15 +48,20 @@ export default function HomeView() {
             style={{ width: 200, marginTop: 10 }}
             variant="dark"
           >
-            {user.name}'s Profile
+            {user && user.name}
           </Button>
         </center>
       </div>
       <div className="col-8 offset-md-1 mt-5 w-50">
         <Row xs={1} md={2} className="g-4">
-          {all}
+          {arr.map((repo, i) => {
+            const repoPath = repo.split("\\")
+            const repoName = repoPath[repoPath.length - 1]
+
+            return <Cards key={i} all={repoName} />
+          })}
         </Row>
       </div>
     </div>
-  );
+  )
 }

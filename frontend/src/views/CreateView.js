@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import axios from "axios";
-import { Notification } from "rsuite";
-import "rsuite/dist/styles/rsuite-default.css";
+import React, { useState } from "react"
+import { useHistory } from "react-router-dom"
+import axios from "axios"
+import { Notification } from "rsuite"
+import "rsuite/dist/styles/rsuite-default.css"
 
 const notify = (msg) => {
   Notification.open({
@@ -12,28 +12,28 @@ const notify = (msg) => {
         {msg}
       </p>
     ),
-  });
-};
+  })
+}
 
 export default function CreateView() {
-  const user = JSON.parse(localStorage.getItem("User"));
-  const history = useHistory();
-  if (!user) history.push("/auth");
-  const [repo, setRepo] = useState(() => "");
-
+  const user = JSON.parse(localStorage.getItem("User"))
+  const history = useHistory()
+  if (!user) history.push("/auth")
+  const [repo, setRepo] = useState(() => "")
+  const [checked, setChecked] = useState(() => false)
   const PostRepo = () => {
     axios
       .post(`/api/init?username=${user && user.userName}&repo=${repo}`)
-      .catch((err) => notify(`${err.response.status} has occured.`));
+      .catch((err) => notify(`${err.response.status} has occured.`))
 
-    history.push("/");
-    notify(`${repo}.git has been greated.`);
-  };
+    history.push("/")
+    notify(`${repo}.git has been created.`)
+  }
 
   const getRepoName = (e) => {
-    console.log(e.target.value);
-    setRepo(e.target.value);
-  };
+    console.log(e.target.value)
+    setRepo(e.target.value)
+  }
 
   return (
     <div
@@ -47,11 +47,11 @@ export default function CreateView() {
           type="text"
           className="form-control mt-3"
           aria-describedby="emailHelp"
-          placeholder="repo name"
+          placeholder="MyNewAwesomeProject"
           id="PostRepoName"
         />
         <div id="emailHelp" className="form-text mb-3">
-          The name must be an unieqe name.
+          The name must be unique.
         </div>
         <div className="form-check">
           <input
@@ -59,10 +59,10 @@ export default function CreateView() {
             type="radio"
             name="flexRadioDefault"
             id="flexRadioDefault1"
+            checked={!checked}
+            onChange={() => setChecked(!checked)}
           />
-          <label className="form-check-label" for="flexRadioDefault1">
-            Public
-          </label>
+          <label className="form-check-label">Public</label>
         </div>
         <div className="form-check">
           <input
@@ -70,11 +70,10 @@ export default function CreateView() {
             type="radio"
             name="flexRadioDefault"
             id="flexRadioDefault2"
-            checked
+            checked={checked}
+            onChange={() => setChecked(!checked)}
           />
-          <label className="form-check-label" for="flexRadioDefault2">
-            Private
-          </label>
+          <label className="form-check-label">Private</label>
         </div>
         <button
           onClick={() => PostRepo()}
@@ -85,5 +84,5 @@ export default function CreateView() {
         </button>
       </div>
     </div>
-  );
+  )
 }

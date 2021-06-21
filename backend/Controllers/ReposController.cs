@@ -9,6 +9,8 @@ using System.IO.Compression;
 using System.Linq;
 using backend.Models.Data;
 using backend.Models;
+using System.Net.Http;
+using System.Net;
 
 namespace backend.Controllers
 {
@@ -103,7 +105,12 @@ namespace backend.Controllers
             if (!repoDir.Exists) return NotFound(repoDir);
             if (zipName.Exists) System.IO.File.Delete(zipName.FullName);
             ZipFile.CreateFromDirectory(repoDir.FullName, zipName.FullName);
-            return new FileContentResult(System.IO.File.ReadAllBytes(zipName.FullName), "application/zip");
+
+
+            return new FileContentResult(System.IO.File.ReadAllBytes($"{_directory}{dto.Username}/{dto.Repo}.zip"), "application/zip")
+            {
+                FileDownloadName = $"{dto.Repo}.zip"
+            };
         }
 
         [HttpGet("Explore")]

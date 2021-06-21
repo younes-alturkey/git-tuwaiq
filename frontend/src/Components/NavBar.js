@@ -3,7 +3,7 @@ import { Container, Navbar, Nav, Image } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { FiPlus } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
-import { VscRepoClone } from "react-icons/vsc";
+import { BiGitRepoForked } from "react-icons/bi";
 import Logo from "../assets/img/logo.png";
 import { VscSignOut } from "react-icons/vsc";
 
@@ -54,8 +54,9 @@ const NavBar = () => {
           <Nav>
             <LinkContainer style={{ cursor: "pointer" }} to="/fork">
               <Nav.Link>
-                <VscRepoClone
+                <BiGitRepoForked
                   style={{
+                    width: 21,
                     color: "white",
                     fontSize: "25px",
                     marginTop: "10px",
@@ -80,7 +81,7 @@ const NavBar = () => {
                 style={{
                   color: "red",
                   fontSize: "25px",
-                  marginTop: "10px",
+                  marginTop: "8px",
                   marginRight: "10px",
                 }}
               />

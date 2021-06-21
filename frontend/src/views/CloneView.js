@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useHistory } from "react-router-dom";
-import { Notification } from "rsuite";
-import "rsuite/dist/styles/rsuite-default.css";
+import React, { useState } from "react"
+import axios from "axios"
+import { useHistory } from "react-router-dom"
+import { Notification } from "rsuite"
+import "rsuite/dist/styles/rsuite-default.css"
 
 const notify = (msg) => {
   Notification.open({
@@ -12,14 +12,14 @@ const notify = (msg) => {
         {msg}
       </p>
     ),
-  });
-};
+  })
+}
 
 const ForkView = () => {
-  const loggedUser = JSON.parse(localStorage.getItem("User"));
-  const history = useHistory();
-  if (!loggedUser) history.push("/auth");
-  const [textClone, setTextClone] = useState(() => null);
+  const loggedUser = JSON.parse(localStorage.getItem("User"))
+  const history = useHistory()
+  if (!loggedUser) history.push("/auth")
+  const [textClone, setTextClone] = useState(() => null)
 
   const postClone = () => {
     axios
@@ -29,12 +29,11 @@ const ForkView = () => {
         }`
       )
       .catch((err) => {
-        notify(`${err.response.status} error occured.`);
-      });
-
-    history.push("/");
-    notify(`The repo has been cloned.`);
-  };
+        notify(`${err.response.status} error occured.`)
+      })
+    notify(`The repo has been forked.`)
+    history.push("/")
+  }
 
   return (
     <div>
@@ -64,7 +63,7 @@ const ForkView = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ForkView;
+export default ForkView
