@@ -1,52 +1,89 @@
-import React,{useState }from 'react'
-import { useHistory } from 'react-router-dom'
-import axios from 'axios'
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
+import { Notification } from "rsuite";
+import "rsuite/dist/styles/rsuite-default.css";
+
+const notify = (msg) => {
+  Notification.open({
+    title: "Notification",
+    description: (
+      <p width={320} rows={3}>
+        {msg}
+      </p>
+    ),
+  });
+};
 
 export default function CreateView() {
-    const user = JSON.parse(localStorage.getItem("User"))
-    const history = useHistory()
-    if(!user) history.push("/auth")
-    const [repo, setRepo] = useState(()=>"")
+  const user = JSON.parse(localStorage.getItem("User"));
+  const history = useHistory();
+  if (!user) history.push("/auth");
+  const [repo, setRepo] = useState(() => "");
 
+  const PostRepo = () => {
+    axios
+      .post(`/api/init?username=${user && user.userName}&repo=${repo}`)
+      .catch((err) => notify(`${err.response.status} has occured.`));
 
-    const PostRepo = () => {
-        axios.post(`/api/init?username=${user && user.userName}&repo=${repo}`).then((res)=>{
-            history.push("/")
-         }).catch(err=>{
-             console.log("err:", err);
-         })
-    };
+    history.push("/");
+    notify(`${repo}.git has been greated.`);
+  };
 
+  const getRepoName = (e) => {
+    console.log(e.target.value);
+    setRepo(e.target.value);
+  };
 
-    const getRepoName =(e)=>{
-        console.log(e.target.value);
-        setRepo(e.target.value)
-    };
-  
-
-    return (
-        <div className="container mt-5 w-50" style={{backgroundColor:"lightGray"}}>
-            <h2 className="text-center"> Create new repo!</h2>
-        <div>
-        <div class="mb-3">
-            <label for="text" class="form-label">User:</label>
-            <input onChange={(e) => getRepoName(e)} type="text" class="form-control"  aria-describedby="emailHelp" placeholder="repo name" id="PostRepoName"/>
-            <div id="emailHelp" class="form-text">The name must be an unieqe name.</div>
+  return (
+    <div
+      className="container mt-5 w-50"
+      style={{ backgroundColor: "lightGray" }}
+    >
+      <h2 className="text-center"> Create new repository</h2>
+      <div>
+        <input
+          onChange={(e) => getRepoName(e)}
+          type="text"
+          className="form-control mt-3"
+          aria-describedby="emailHelp"
+          placeholder="repo name"
+          id="PostRepoName"
+        />
+        <div id="emailHelp" className="form-text mb-3">
+          The name must be an unieqe name.
         </div>
-        <div class="form-check">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"/>
-        <label class="form-check-label" for="flexRadioDefault1">
-           Public
-        </label>
+        <div className="form-check">
+          <input
+            className="form-check-input"
+            type="radio"
+            name="flexRadioDefault"
+            id="flexRadioDefault1"
+          />
+          <label className="form-check-label" for="flexRadioDefault1">
+            Public
+          </label>
         </div>
-        <div class="form-check">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked/>
-        <label class="form-check-label" for="flexRadioDefault2">
+        <div className="form-check">
+          <input
+            className="form-check-input"
+            type="radio"
+            name="flexRadioDefault"
+            id="flexRadioDefault2"
+            checked
+          />
+          <label className="form-check-label" for="flexRadioDefault2">
             Private
-        </label>
+          </label>
         </div>
-        <button onClick={() => PostRepo()} class="btn btn-dark w-100 mx-auto" style={{margin:"20px"}}>Submit</button>
-        </div>
-        </div>
-    )
+        <button
+          onClick={() => PostRepo()}
+          className="btn w-100 mx-auto"
+          style={{ margin: "20px", backgroundColor: "green", color: "white" }}
+        >
+          Create
+        </button>
+      </div>
+    </div>
+  );
 }

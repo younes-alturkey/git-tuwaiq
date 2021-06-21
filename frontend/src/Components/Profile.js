@@ -59,11 +59,13 @@ const Profile = () => {
             src="https://acegif.com/wp-content/uploads/2021/4fh5wi/pepefrg-4.gif"
           />
           <br />
-          <h4 style={{ color: "#6c757d" }}>Riyadh</h4>
+          <h4 style={{ color: "#6c757d", marginTop: 5 }}>
+            @{user && user.username}
+          </h4>
 
           <Button
             onClick={() => handleBtn()}
-            style={{ width: 200 }}
+            style={{ width: 200, marginTop: 10 }}
             variant="dark"
           >
             {" "}
@@ -139,40 +141,50 @@ const Profile = () => {
                 User Name:
               </label>
               <input
-                disabled
                 type="text"
                 className="form-control"
-                id="username"
+                value={user && user.username}
               />
             </div>
             <div className="col-md-6">
               <label htmlFor="name" className="form-label">
                 Name:
               </label>
-              <input disabled type="text" className="form-control" id="name" />
+              <input
+                type="text"
+                className="form-control"
+                value={user && user.name}
+              />
             </div>
             <div className="col-md-6">
               <label htmlFor="email" className="form-label">
                 Email:
               </label>
               <input
-                disabled
                 type="email"
                 className="form-control"
-                id="email"
+                value={user && user.email}
               />
             </div>
             <div className="col-md-6">
               <label htmlFor="password" className="form-label">
-                Password:
+                Id:
               </label>
-              <input disabled type="password" className="form-control" />
+              <input
+                type="number"
+                className="form-control"
+                value={user && user.id}
+              />
             </div>
             <div className="col-md-12">
               <label htmlFor="joindate" className="form-label">
                 Join Date:
               </label>
-              <input disabled type="text" className="form-control" />
+              <input
+                type="text"
+                className="form-control"
+                value={user && user.createdAt}
+              />
             </div>
           </form>
         </div>
@@ -182,4 +194,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
