@@ -27,8 +27,7 @@
 
 - Secure
 - Fast
-- Flex
-- Pepe
+- Flexible
 
 </div>
 <br/>
@@ -71,7 +70,7 @@ npm start
 
 ## Tech Stack
 
-### <a href="https://backend20210620132023.azurewebsites.net/swagger/index.html">Backend</a>
+### <a href="https://gittuwaiq-api.azurewebsites.net/swagger/index.html">Backend</a>
 
 - .NET Core 5 Web API
 - Entity Framework - Code First Approach
