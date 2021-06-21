@@ -10,7 +10,6 @@ export default function HomeView() {
   if (!user) history.push("/auth")
   const [arr, setaArr] = useState(() => ["Fetching your repos..."])
   useEffect(() => {
-    console.log("here")
     const fetchUsers = () => {
       return axios(`/api/users/repos?username=${user && user.userName}`).then(
         (response) => setaArr(response.data)
