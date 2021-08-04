@@ -100,7 +100,9 @@ npm start
 
 <br/>
 
-## Developers
+## Developers at Tuwaiq .NET Bootcamp
+
+> Younes Alturkey (Project Manager) ➝ [@younes-alturkey](https://github.com/younes-alturkey)
 
 > Riyad Alghamdi ➝ [@1Riyad](https://github.com/1Riyad)
 
@@ -117,7 +119,5 @@ npm start
 > Mansour Aldundur ➝ [@aldundur-Mansour](https://github.com/aldundur-Mansour)
 
 > Abdulrahman Bin Maneea ➝ [@AWManeea](https://github.com/AWManeea)
-
-> Younes Alturkey ➝ [@younes-alturkey](https://github.com/younes-alturkey)
 
 </div>
