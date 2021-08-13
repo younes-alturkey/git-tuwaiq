@@ -5,7 +5,7 @@
 <a href="https://gittuwaiq.netlify.app/">GitTuwaiq: Web-based GUI for Git</a>
 
 </h1>
-<h4 align="center">Web-based graphical interface for distributed version control system Git.</h4>
+<h4 align="center">Web-based GUI for distributed vcs Git developed in 12 hours.</h4>
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
