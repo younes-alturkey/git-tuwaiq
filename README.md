@@ -41,7 +41,7 @@ From your command line:
 #### # Clone this repository
 
 ```bash
-git clone https://github.com/YounesAlturkey/gittuwaiq.git
+git clone https://github.com/younes-alturkey/gittuwaiq.git
 ```
 
 #### # Go into the frontend directory
