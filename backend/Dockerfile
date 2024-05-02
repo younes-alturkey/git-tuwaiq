@@ -2,13 +2,13 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
 EXPOSE 6000
 
-# Install system dependencies required for LibGit2Sharp and other operations
+# Install necessary libraries for LibGit2Sharp
 RUN apt-get update && apt-get install -y \
+    libgit2-28 \
     libc6 \
     libssl1.1 \
-    libcurl3-gnutls \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    libcurl3-gnutls && \
+    rm -rf /var/lib/apt/lists/*
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
