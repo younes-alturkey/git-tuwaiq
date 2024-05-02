@@ -1,12 +1,12 @@
-import React from "react";
-import { Card, Col } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+import React from "react"
+import { Card, Col } from "react-bootstrap"
+import { useHistory } from "react-router-dom"
 const Cards = (props) => {
-  let history = useHistory();
+  let history = useHistory()
   const handleRepo = () => {
-    let i = props.all.split("\\");
-    history.push("/repo/" + i[i.length - 1]);
-  };
+    let i = props.all.split("/")
+    history.push("/repo/" + i[i.length - 1])
+  }
   return (
     <Col style={{ cursor: "pointer" }}>
       <Card onClick={() => handleRepo()}>
@@ -15,7 +15,7 @@ const Cards = (props) => {
         </Card.Body>
       </Card>
     </Col>
-  );
-};
+  )
+}
 
-export default Cards;
+export default Cards
