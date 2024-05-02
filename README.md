@@ -2,7 +2,7 @@
 <a href="https://gittuwaiq.netlify.app/"><img src="./frontend/src/assets/img/logo.png" alt="GitTuwaiq Logo" width="80"/></a>
 </br>
 
-<a href="https://gittuwaiq.netlify.app/">GitTuwaiq: Web-based GUI for Git</a>
+<a href="https://gittuwaiq.netlify.app/">Git-Tuwaiq: Web-based GUI for Git</a>
 
 </h1>
 <h4 align="center">Web-based GUI for distributed vcs Git developed in 12 hours.</h4>
