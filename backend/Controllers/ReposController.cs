@@ -182,7 +182,7 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = $"{_directory}{repo.Username}\\{repo.Repo}";
+                string repoPath = $"{_directory}{repo.Username}/{repo.Repo}";
                 if (!new DirectoryInfo(repoPath).Exists) return NotFound($"The repo `{repoPath}` does not exist");
                 var repository = new Repository(repoPath);
                 var commits = repository.Commits.ToArray();
@@ -232,7 +232,7 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = $"{_directory}{repo.Username}\\{repo.Repo}";
+                string repoPath = $"{_directory}{repo.Username}/{repo.Repo}";
                 if (!new DirectoryInfo(repoPath).Exists) return NotFound("The repo does not exist");
                 var repository = new Repository(repoPath);
                 var branches = repository.Branches.ToArray();
@@ -289,7 +289,7 @@ namespace backend.Controllers
         {
             try
             {
-                var repoDir = new DirectoryInfo($"{_directory}{username}\\{repo}");
+                var repoDir = new DirectoryInfo($"{_directory}{username}/{repo}");
                 var repoObj = new Repository(repoDir.FullName);
                 return Ok(new { repo });
             }
@@ -333,7 +333,7 @@ namespace backend.Controllers
         {
             try
             {
-                string repoPath = $"{_directory}{username}\\{repo}";
+                string repoPath = $"{_directory}{username}/{repo}";
                 var repos = Directory.GetDirectories(_directory);
                 foreach (var directory in repos)
                 {

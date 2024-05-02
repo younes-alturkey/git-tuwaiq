@@ -54,7 +54,7 @@ export default function HomeView() {
       <div className="col-8 offset-md-1 mt-5 w-50">
         <Row xs={1} md={2} className="g-4">
           {arr.map((repo, i) => {
-            const repoPath = repo.split("\\")
+            const repoPath = repo.split("/")
             const repoName = repoPath[repoPath.length - 1]
 
             return <Cards key={i} all={repoName} />
