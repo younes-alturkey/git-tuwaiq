@@ -1,10 +1,10 @@
+import axios from "axios"
 import React from "react"
 import ReactDOM from "react-dom"
-import "./index.css"
 import App from "./App"
-import axios from "axios"
+import "./index.css"
 
-axios.defaults.baseURL = "https://gittuwaiq-api.azurewebsites.net"
+axios.defaults.baseURL = "https://gittuwaiq.younes.ai"
 axios.defaults.headers.post["Content-Type"] = "application/json"
 
 ReactDOM.render(<App />, document.getElementById("root"))
