@@ -46,8 +46,9 @@ namespace backend.Controllers
             public string Path { get; set; } = "";
         }
 
-        public ReposController(AppDbContext db)
+        public ReposController(ILogger logger, AppDbContext db)
         {
+             _logger = logger;
             _db = db;
             switch (Environment.OSVersion.Platform)
             {
@@ -324,6 +325,7 @@ namespace backend.Controllers
             }
             catch (Exception error)
             {
+                  _logger.LogError("An error occurred: {Error}", error.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = error.Message });
             }
         }
