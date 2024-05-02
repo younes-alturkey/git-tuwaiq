@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react"
-import { Button, Image, Row } from "react-bootstrap"
 import axios from "axios"
-import Cards from "../Components/Cards"
+import React, { useEffect, useState } from "react"
+import { Button, Image, Row } from "react-bootstrap"
 import { useHistory } from "react-router-dom"
+import Cards from "../Components/Cards"
 
 export default function HomeView() {
   const user = JSON.parse(localStorage.getItem("User"))
@@ -35,7 +35,7 @@ export default function HomeView() {
             }}
             width="170"
             height="160"
-            src="https://i0.wp.com/novocom.top/image/bWVkabm9yLWExLnRlbm9yLmNvbQ==/images/c8c0e6588c416703742a082de8d5db1a/tenor.gif"
+            src="https://usagif.com/wp-content/uploads/2021/4fh5wi/pepefrg-4.gif"
           />
           <br />
           <h4 style={{ color: "#6c757d", marginTop: 5 }}>

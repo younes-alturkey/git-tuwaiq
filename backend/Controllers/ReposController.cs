@@ -19,7 +19,7 @@ namespace backend.Controllers
     public class ReposController : ControllerBase
     {
         private readonly string _directory = $"{Environment.GetEnvironmentVariable("TEMP")}/repos/";
-        private readonly string _domain = "https://backend20210620132023.azurewebsites.net/";
+        private readonly string _domain = "https://gittuwaiq.younes.ai";
         private readonly AppDbContext _db;
         public record file(string name, string type, string url);
 
